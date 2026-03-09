@@ -12,7 +12,7 @@ execute:
 
 # Repository info
 repository:
-  url: https://github.com/eguzmanlopez/computational-chemistry-book
+  url: https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book
   path_to_book: ""
   branch: main
 
