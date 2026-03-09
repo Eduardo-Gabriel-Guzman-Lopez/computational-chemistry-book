@@ -372,36 +372,36 @@ plt.tight_layout()
 plt.show()
 ```
 
-## Exercises
+## Ejercicios
 
-```{admonition} Exercise 1: New Molecule
+```{admonition} Ejercicio 1: Nueva molécula
 :class: note
-Choose a molecule of your interest (drug, natural product, etc.) and run it through the complete pipeline. Compare its structural parameters with literature values.
+Elige una molécula de tu interés (fármaco, producto natural, etc.) y ejecútala en el flujo completo. Compara sus parámetros estructurales con valores de la literatura.
 ```
 
-```{admonition} Exercise 2: Embedding Failures
+```{admonition} Ejercicio 2: Fallas de incrustación
 :class: note
-Find a molecule that causes embedding failure. What structural features make it difficult? How would you solve this?
+Encuentra una molécula que falle al incrustarse. ¿Qué características estructurales la hacen difícil? ¿Cómo lo solucionarías?
 ```
 
-```{admonition} Exercise 3: Force Field Comparison
+```{admonition} Ejercicio 3: Comparación de campos de fuerza
 :class: note
-Compare MMFF94 and UFF results for the same molecule. Which gives better geometry for your molecule class?
+Compara los resultados de MMFF94 y UFF para la misma molécula. ¿Cuál produce mejor geometría para tu clase de moléculas?
 ```
 
-## Summary
+## Resumen
 
-In this practice, you learned:
+En esta práctica aprendiste:
 
-1. **Molecular representations**: The differences between 0D, 1D, 2D, and 3D representations
-2. **3D embedding**: How ETKDG generates initial 3D coordinates from SMILES
-3. **Force field optimization**: Pre-optimization with MMFF94 to obtain reasonable starting geometries
-4. **Semiempirical methods**: GFN2-xTB provides near-DFT quality at low computational cost
-5. **Pipeline automation**: Building reproducible workflows for processing multiple molecules
+1. **Representaciones moleculares**: Las diferencias entre representaciones 0D, 1D, 2D y 3D
+2. **Incrustación 3D**: Cómo ETKDG genera coordenadas 3D iniciales a partir de SMILES
+3. **Optimización por campo de fuerza**: Pre‑optimización con MMFF94 para obtener geometrías iniciales razonables
+4. **Métodos semiempericos**: GFN2-xTB ofrece calidad cercana a DFT con bajo costo computacional
+5. **Automatización del flujo**: Construir flujos reproducibles para procesar múltiples moléculas
 
-```{admonition} Next Steps
+```{admonition} Pasos siguientes
 :class: tip
-In Practice 2, we'll use these optimized geometries as starting points for conformational sampling to explore the conformational space of flexible molecules.
+En la Práctica 2 usaremos estas geometrías optimizadas como puntos de partida para el muestreo conformacional y explorar el espacio conformacional de moléculas flexibles.
 ```
 
 ## References

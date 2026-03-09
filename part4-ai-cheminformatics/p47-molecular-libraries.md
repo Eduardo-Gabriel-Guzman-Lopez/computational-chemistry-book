@@ -2,10 +2,10 @@
 
 ```{admonition} Resumen de la práctica
 :class: tip
-**Thematic Block**: 17 - Chemical Space Exploration  
-**Difficulty Level**: Intermediate  
-**Estimated Time**: 1h (seed) + 3h (forest and analysis)  
-**Pipeline**: SMILES scaffold → derivative enumeration → 3D generation → Lipinski/Veber filtering → energy screening → structured dataset
+**Bloque temático**: 17 – Exploración del espacio químico  
+**Nivel de dificultad**: Intermedio  
+**Tiempo estimado**: 1 h (semilla) + 3 h (bosque y análisis)  
+**Flujo**: andamiaje SMILES → enumeración de derivados → generación 3D → filtrado Lipinski/Veber → cribado energético → conjunto de datos estructurado
 ```
 
 ## Introducción
@@ -23,24 +23,24 @@ Enumeración (P47) → Representación y similitud (P49-P50)
 
 ### 1. SMILES y SMARTS: el lenguaje del espacio químico
 
-SMILES (*Simplified Molecular Input Line Entry System*) encodes molecular connectivity as a text string. SMARTS (*SMILES arbitrary target specification*) extends SMILES for substructure searching and reaction pattern definition.
+SMILES (*Sistema Simplificado de Entrada Lineal de Moléculas*) codifica la conectividad molecular como una cadena de texto. SMARTS (*especificación arbitraria de objetivos SMILES*) extiende SMILES para la búsqueda de subestructuras y la definición de patrones de reacción.
 
 ### 2. Regla de los cinco de Lipinski
 
-The Lipinski criteria (1997) identify molecules with low probability of oral bioavailability:
+Los criterios de Lipinski (1997) identifican moléculas con baja probabilidad de biodisponibilidad oral:
 
-| Property | Threshold |
-|----------|-----------|
-| Molecular Weight | ≤ 500 Da |
-| LogP | ≤ 5 |
-| H-bond Donors | ≤ 5 |
-| H-bond Acceptors | ≤ 10 |
+| Propiedad | Umbral |
+|----------|--------|
+| Peso molecular | ≤ 500 Da |
+| LogP | ≤ 5 |
+| Donantes de H-bond | ≤ 5 |
+| Aceptores de H-bond | ≤ 10 |
 
-**Veber's additions:** Rotatable bonds ≤ 10 and Polar Surface Area (PSA) ≤ 140 Å²
+**Adiciones de Veber:** Enlaces rotables ≤ 10 y Área de Superficie Polar (PSA) ≤ 140 Å²
 
 ### 3. GFN2-xTB para cribado energético
 
-The semiempirical GFN2-xTB method calculates total energy with sufficient accuracy for screening: mean error in formation enthalpies < 3 kcal/mol, calculation time ~1s per molecule (up to 50 heavy atoms).
+El método semiemperico GFN2-xTB calcula la energía total con precisión suficiente para el cribado: error medio en entalpías de formación < 3 kcal/mol, tiempo de cálculo ~1 s por molécula (hasta 50 átomos pesados).
 
 ## Protocolo computacional
 
@@ -72,7 +72,7 @@ for pos, subs in substituents.items():
 print(f"\nTotal combinations: {np.prod([len(v) for v in substituents.values()])}")
 ```
 
-### Step 2: Enumerate Derivatives
+### Paso 2: Enumerar derivados
 
 ```{code-cell} ipython3
 def generate_derivatives(core_smiles, substituents_dict):
@@ -103,7 +103,7 @@ def generate_derivatives(core_smiles, substituents_dict):
         sub_dict = {pos: sub for pos, sub in zip(positions, combo)}
         
         # Simple combination approach: append substituents to SMILES
-        # In practice, you would use SMARTS-based reaction transformations
+        # En la práctica usarías transformaciones de reacción basadas en SMARTS
         mol_smiles = core_smiles
         
         # For this example, we'll generate simpler test molecules
@@ -140,7 +140,7 @@ for sub in simple_subs:
 print(f"Generated {len(library)} valid derivatives")
 ```
 
-### Step 3: Calculate Lipinski and Veber Descriptors
+### Paso 3: Calcular descriptores de Lipinski y Veber
 
 ```{code-cell} ipython3
 def calculate_descriptors(smiles):
@@ -172,7 +172,7 @@ print("Descriptor summary:")
 print(df[['MW', 'LogP', 'HBD', 'HBA', 'TPSA']].describe().round(2))
 ```
 
-### Step 4: Apply Drug-Likeness Filters
+### Paso 4: Aplicar filtros de semejanza a fármacos
 
 ```{code-cell} ipython3
 def check_lipinski(row, max_violations=1):
@@ -201,7 +201,7 @@ print(f"  Drug-like (both): {df['DrugLike'].sum()}")
 print(f"  Success rate: {df['DrugLike'].mean()*100:.1f}%")
 ```
 
-### Step 5: 3D Generation and Visualization
+### Paso 5: Generación 3D y visualización
 
 ```{code-cell} ipython3
 import py3Dmol
@@ -248,7 +248,7 @@ print("3D Generation results:")
 print(df_subset[['name', 'MW', 'LogP', 'Energy_FF']])
 ```
 
-### Step 6: Visualize Selected Molecules
+### Paso 6: Visualizar moléculas seleccionadas
 
 ```{code-cell} ipython3
 # Visualize a drug-like molecule
@@ -267,7 +267,7 @@ if mol_3d:
     viewer.show()
 ```
 
-### Step 7: Energy Screening (GFN2-xTB)
+### Paso 7: Cribado energético (GFN2-xTB)
 
 For high-throughput screening, GFN2-xTB provides accurate energies at low computational cost.
 
@@ -314,7 +314,7 @@ Derivative screening
 
 ::::
 
-### Step 8: Analyze the Library
+### Paso 8: Analizar la biblioteca
 
 ```{code-cell} ipython3
 import matplotlib.pyplot as plt
@@ -363,7 +363,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-### Step 9: Export Results
+### Paso 9: Exportar resultados
 
 ```{code-cell} ipython3
 # Select drug-like compounds for further study
@@ -415,7 +415,7 @@ Generate 3D conformers for all drug-like molecules and filter out those with unu
 
 ## Summary
 
-In this practice, you learned:
+En esta práctica aprendiste:
 
 1. **Virtual enumeration**: Generating combinatorial libraries from a scaffold
 2. **Drug-likeness filtering**: Applying Lipinski and Veber rules
@@ -423,9 +423,9 @@ In this practice, you learned:
 4. **3D generation**: Using ETKDGv3 for conformer generation
 5. **Energy screening**: Using GFN2-xTB for fast energy filtering
 
-```{admonition} Next Steps
+```{admonition} Pasos siguientes
 :class: tip
-In Practice 49-50, we'll learn molecular fingerprints and similarity calculations to cluster and analyze these libraries.
+En las Prácticas 49–50 aprenderemos huellas moleculares y cálculos de similitud para agrupar y analizar estas bibliotecas.
 ```
 
 ## References

@@ -1,20 +1,20 @@
-# Practice 19: Reaction Energy Analysis
+# Práctica 19: Análisis de energía de reacción
 
-```{admonition} Coming Soon
+```{admonition} Próximamente
 :class: warning
-This practice is under development. Content will be translated from the Spanish version.
+Esta práctica está en desarrollo. El contenido se traducirá de la versión en español.
 ```
 
-## Overview
+## Visión general
 
-This practice covers:
-- Calculation of reaction enthalpies
-- Thermochemical cycles
-- Comparison between different levels of theory
+Esta práctica cubre:
+- Cálculo de entalpías de reacción
+- Ciclos termodinámicos
+- Comparación entre diferentes niveles de teoría
 
-## Placeholder Content
+## Contenido provisional
 
-The full practice will include:
+La práctica completa incluirá:
 
 ::::{tab-set}
 
@@ -28,8 +28,8 @@ Equivalent ORCA input files.
 
 ::::
 
-## Prerequisites
+## Prerrequisitos
 
-- Practice 1-18 completion recommended
-- Understanding of thermodynamic principles
-- Familiarity with DFT calculations
+- Se recomienda haber completado las prácticas 1–18
+- Comprensión de principios termodinámicos
+- Familiaridad con cálculos DFT

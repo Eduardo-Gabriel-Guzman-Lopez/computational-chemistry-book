@@ -1,20 +1,20 @@
-# Practice 33: Transition State Analysis
+# Práctica 33: Análisis de estados de transición
 
-```{admonition} Coming Soon
+```{admonition} Próximamente
 :class: warning
-This practice is under development. Content will be translated from the Spanish version.
+Esta práctica está en desarrollo. El contenido se traducirá de la versión en español.
 ```
 
-## Overview
+## Visión general
 
-This practice covers:
-- Transition state location and characterization
-- Intrinsic Reaction Coordinate (IRC) calculations
-- Activation energy determination
+Esta práctica cubre:
+- Localización y caracterización de estados de transición
+- Cálculos de trayectoria de reacción intrínseca (IRC)
+- Determinación de energía de activación
 
-## Placeholder Content
+## Contenido provisional
 
-The full practice will include:
+La práctica completa incluirá:
 
 ::::{tab-set}
 
@@ -28,8 +28,8 @@ Equivalent ORCA input files.
 
 ::::
 
-## Prerequisites
+## Prerrequisitos
 
-- Understanding of potential energy surfaces
-- Experience with geometry optimization
-- Knowledge of reaction mechanisms
+- Comprensión de superficies de energía potencial
+- Experiencia con optimización de geometría
+- Conocimiento de mecanismos de reacción
