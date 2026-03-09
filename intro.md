@@ -1,4 +1,6 @@
-# Bienvenido a Química Computacional: de la Mecánica Cuántica al Diseño Asistido por IA
+![](assets/images/cover.png){width="60%" style="display:block;margin:auto"}
+
+# Manual de prácticas para química computacional. Del orbital al espacio químico
 
 Este libro interactivo ofrece una introducción práctica y completa a las técnicas de química computacional, desde cálculos cuánticos fundamentales hasta el diseño molecular moderno impulsado por inteligencia artificial.
 
