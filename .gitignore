@@ -1,0 +1,33 @@
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# PDFs compilados
+*.pdf
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Gaussian / ORCA outputs
+*.chk
+*.rwf
+*.tmp
+*.gbw
+*.engrad
+*.hess
+
+# datasets temporales
+data/tmp/
