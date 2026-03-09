@@ -1,0 +1,49 @@
+# Book settings
+title: "Computational Chemistry: From Quantum Mechanics to AI-Driven Design"
+author: "Eduardo Guzman-Lopez"
+copyright: "2026"
+logo: assets/images/logo.png
+
+# Execution settings
+execute:
+  execute_notebooks: auto
+  timeout: 600
+  allow_errors: false
+
+# Repository info
+repository:
+  url: https://github.com/eguzmanlopez/computational-chemistry-book
+  path_to_book: ""
+  branch: main
+
+# HTML settings
+html:
+  use_issues_button: true
+  use_repository_button: true
+  use_edit_page_button: true
+  home_page_in_navbar: true
+
+# Launch buttons for interactivity
+launch_buttons:
+  notebook_interface: "jupyterlab"
+  binderhub_url: "https://mybinder.org"
+  colab_url: "https://colab.research.google.com"
+  thebe: true
+
+# Sphinx extensions
+sphinx:
+  extra_extensions:
+    - sphinx_design
+  config:
+    language: en
+
+# MyST parser extensions
+parse:
+  myst_enable_extensions:
+    - amsmath
+    - colon_fence
+    - deflist
+    - dollarmath
+    - html_admonition
+    - substitution
+    - tasklist

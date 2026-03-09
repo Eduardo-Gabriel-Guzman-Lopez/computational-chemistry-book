@@ -1,0 +1,31 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+parts:
+  - caption: "Part I: Foundations of Quantum Chemistry"
+    chapters:
+      - file: part1-foundations/p01-first-steps
+        title: "Practice 1: First Steps with Gaussian and ORCA"
+      # Future practices will be added here
+      # - file: part1-foundations/p02-name
+      # - file: part1-foundations/p03-name
+
+  - caption: "Part II: Chemical Reactivity"
+    chapters:
+      - file: part2-reactivity/p19-reaction-analysis
+        title: "Practice 19: Reaction Energy Analysis"
+      # Future practices will be added here
+
+  - caption: "Part III: Reaction Mechanisms"
+    chapters:
+      - file: part3-mechanisms/p33-transition-states
+        title: "Practice 33: Transition State Analysis"
+      # Future practices will be added here
+
+  - caption: "Part IV: AI in Cheminformatics"
+    chapters:
+      - file: part4-ai-cheminformatics/p47-molecular-libraries
+        title: "Practice 47: Molecular Library Generation with RDKit"
+      # Future practices will be added here
