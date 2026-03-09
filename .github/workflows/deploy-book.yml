@@ -1,36 +1,51 @@
-name: deploy-book
+name: build-book
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  build-book:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: install python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: install dependencies
+      - name: Install dependencies
         run: |
-          pip install jupyter-book
+          python -m pip install --upgrade pip
+          pip install jupyter-book ghp-import
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: build book
+      - name: Show project files
         run: |
-          jupyter-book build .
+          pwd
+          ls -la
+          find . -maxdepth 2 -type f | sort | head -200
 
-      - name: install ghp-import
-        run: pip install ghp-import
-
-      - name: deploy
+      - name: Build book
         run: |
+          jupyter-book build . --all
+
+      - name: Inspect build output
+        run: |
+          echo "Checking _build contents..."
+          ls -la
+          ls -la _build || true
+          ls -la _build/html || true
+
+      - name: Deploy to gh-pages
+        run: |
+          test -d _build/html
           ghp-import -n -p -f _build/html
