@@ -1,4 +1,4 @@
-![](assets/images/cover.png){width="60%" style="display:block;margin:auto"}
+<img src="assets/images/cover.png" alt="Portada" style="display:block;margin:auto;max-width:60%;height:auto;">
 
 # Manual de prácticas para química computacional. Del orbital al espacio químico
 
