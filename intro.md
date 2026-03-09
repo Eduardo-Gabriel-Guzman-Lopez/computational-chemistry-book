@@ -1,72 +1,72 @@
-# Welcome to Computational Chemistry: From Quantum Mechanics to AI-Driven Design
+# Bienvenido a Química Computacional: de la Mecánica Cuántica al Diseño Asistido por IA
 
-This interactive book provides a comprehensive, hands-on introduction to computational chemistry techniques, ranging from fundamental quantum mechanical calculations to modern AI-driven molecular design.
+Este libro interactivo ofrece una introducción práctica y completa a las técnicas de química computacional, desde cálculos cuánticos fundamentales hasta el diseño molecular moderno impulsado por inteligencia artificial.
 
-## About This Book
+## Sobre este libro
 
-This book is designed as a practical laboratory manual for students and researchers interested in computational chemistry. Each chapter contains:
+El texto está pensado como un manual de laboratorio para estudiantes e investigadores de química computacional. Cada capítulo incluye:
 
-- **Theoretical background**: Essential concepts explained clearly
-- **Step-by-step tutorials**: Detailed instructions for calculations
-- **Interactive code**: Python code that you can run directly in your browser
-- **Dual software support**: Examples for both Gaussian and ORCA software packages
+- **Marco teórico**: Conceptos esenciales explicados con claridad
+- **Tutoriales paso a paso**: Instrucciones detalladas para los cálculos
+- **Código interactivo**: celdas de Python que puedes ejecutar directamente en el navegador
+- **Soporte dual de software**: ejemplos tanto para los paquetes Gaussian como ORCA
 
-## Software Support
+## Soporte de software
 
-Throughout this book, we provide computational examples using two major quantum chemistry packages:
+A lo largo del libro presentamos ejemplos usando dos paquetes principales de química cuántica:
 
 ::::{tab-set}
 
 :::{tab-item} Gaussian
-Gaussian is a widely used commercial quantum chemistry software package. The examples in Gaussian tabs show input files and expected outputs for this software.
+Gaussian es un paquete comercial ampliamente usado en química cuántica. Las pestañas de Gaussian muestran los archivos de entrada y los resultados esperados para este software.
 :::
 
 :::{tab-item} ORCA
-ORCA is a powerful, free-for-academic-use quantum chemistry package. The ORCA tabs provide equivalent calculations that you can run without commercial licenses.
+ORCA es un paquete gratuito para uso académico, potente y versátil. Las pestañas de ORCA ofrecen cálculos equivalentes que se pueden ejecutar sin licencias comerciales.
 :::
 
 ::::
 
-## Interactive Features
+## Funcionalidades interactivas
 
-This book offers several ways to interact with the code:
+El libro ofrece varias maneras de interactuar con el código:
 
-1. **Thebe**: Click the rocket icon (🚀) at the top of any page to enable live code execution
-2. **Binder**: Launch a full JupyterLab environment with all dependencies pre-installed
-3. **Google Colab**: Open notebooks in Google Colab for cloud-based execution
+1. **Thebe**: haz clic en el icono de cohete (🚀) en la parte superior de cualquier página para habilitar la ejecución en vivo
+2. **Binder**: lanza un entorno JupyterLab completo con todas las dependencias preinstaladas
+3. **Google Colab**: abre los notebooks en Google Colab para ejecución en la nube
 
 ```{note}
-Python code cells (RDKit, pandas, matplotlib) can be executed interactively. Gaussian and ORCA input files are provided as reference - you'll need access to these programs to run quantum mechanical calculations.
+Las celdas de código Python (RDKit, pandas, matplotlib) pueden ejecutarse interactivamente. Los archivos de entrada para Gaussian y ORCA se proporcionan como referencia; necesitarás acceso a esos programas para ejecutar los cálculos cuánticos.
 ```
 
-## Organization
+## Organización
 
-The book is organized into four main parts:
+El libro está estructurado en cuatro partes principales:
 
-1. **Part I: Foundations of Quantum Chemistry** - Basic concepts, molecular geometry optimization, and electronic structure calculations
-2. **Part II: Chemical Reactivity** - Energy analysis, thermochemistry, and reaction energetics
-3. **Part III: Reaction Mechanisms** - Transition states, reaction pathways, and kinetics
-4. **Part IV: AI in Cheminformatics** - Machine learning, molecular representations, and AI-driven design
+1. **Parte I: Fundamentos de química cuántica** – conceptos básicos, optimización geométrica y cálculos de estructura electrónica
+2. **Parte II: Reactividad química** – análisis de energías, termoquímica y energías de reacción
+3. **Parte III: Mecanismos de reacción** – estados de transición, trayectorias y cinética
+4. **Parte IV: IA en quimioinformática** – aprendizaje automático, representaciones moleculares y diseño asistido por IA
 
-## Getting Started
+## Para empezar
 
-If you're new to computational chemistry, we recommend starting with Practice 1 to familiarize yourself with the basic workflow. Each practice builds upon previous concepts, so following the order is beneficial for beginners.
+Si eres nuevo en química computacional, te recomendamos comenzar con la Práctica 1 para familiarizarte con el flujo de trabajo básico. Cada práctica construye sobre la anterior, así que seguir el orden es útil para principiantes.
 
-For those with experience, feel free to jump directly to the topics that interest you most.
+Para quienes ya tienen experiencia, pueden navegar directamente a los temas que les interesen.
 
-```{admonition} Prerequisites
+```{admonition} Prerrequisitos
 :class: tip
-- Basic knowledge of organic chemistry
-- Familiarity with Python programming (for Part IV)
-- Access to Gaussian or ORCA (for quantum mechanical calculations)
+- Conocimientos básicos de química orgánica
+- Familiaridad con programación en Python (para la Parte IV)
+- Acceso a Gaussian u ORCA (para cálculos cuánticos)
 ```
 
-## Citation
+## Citar este recurso
 
-If you find this resource useful for your research or teaching, please cite:
+Si encuentras útil esta obra para investigación o docencia, por favor cita:
 
-> Guzman-Lopez, E. *Computational Chemistry: From Quantum Mechanics to AI-Driven Design*. 2026.
+> Guzmán-López, E. *Química Computacional: de la Mecánica Cuántica al Diseño Asistido por IA*. 2026.
 
 ---
 
-Let's begin your journey into computational chemistry! 🧪
+¡Comencemos tu viaje por la química computacional! 🧪
