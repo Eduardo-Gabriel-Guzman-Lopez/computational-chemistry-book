@@ -95,3 +95,12 @@ blockquote {
   margin-left: auto;
   margin-right: auto;
 }
+
+/* cover graphic styling */
+img.cover {
+  display: block;
+  margin: 0.5em auto 1.5em;
+  max-width: 100%;
+  height: auto;
+  border: none;
+}
