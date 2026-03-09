@@ -1,4 +1,4 @@
-# Filosofía del laboratorio
+# Estructura y flujos de trabajo
 
 Este manual se concibe como un laboratorio de investigación computacional. El objetivo no es únicamente ejecutar cálculos aislados, sino aprender a construir experimentos computacionales reproducibles que permitan explorar el espacio químico de manera sistemática.
 

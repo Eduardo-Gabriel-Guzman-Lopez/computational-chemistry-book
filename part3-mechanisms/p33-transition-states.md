@@ -19,11 +19,11 @@ La práctica completa incluirá:
 ::::{tab-set}
 
 :::{tab-item} Gaussian
-Example Gaussian input for TS optimization and IRC.
+Ejemplo de entrada Gaussian para optimización TS e IRC.
 :::
 
 :::{tab-item} ORCA
-Equivalent ORCA input files.
+Archivos de entrada equivalentes en ORCA.
 :::
 
 ::::

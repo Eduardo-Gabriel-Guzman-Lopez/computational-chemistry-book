@@ -3,11 +3,12 @@
 
 format: jb-book
 root: intro
+chapters:
+  - file: part1-foundations/overview
+    title: "Estructura y flujos de trabajo"
 parts:
   - caption: "Parte I: Fundamentos de química cuántica"
     chapters:
-      - file: part1-foundations/overview
-        title: "Filosofía del laboratorio"
       - file: part1-foundations/p01-first-steps
         title: "Práctica 1: Primeros pasos con Gaussian y ORCA"
       # Future practices will be added here

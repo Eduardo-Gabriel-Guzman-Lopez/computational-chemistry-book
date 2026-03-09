@@ -19,11 +19,11 @@ La práctica completa incluirá:
 ::::{tab-set}
 
 :::{tab-item} Gaussian
-Example Gaussian input for thermochemistry calculations.
+Ejemplo de entrada Gaussian para cálculos termoquímicos.
 :::
 
 :::{tab-item} ORCA
-Equivalent ORCA input files.
+Archivos de entrada equivalentes en ORCA.
 :::
 
 ::::
