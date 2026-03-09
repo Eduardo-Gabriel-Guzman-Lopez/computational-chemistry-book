@@ -1,6 +1,6 @@
 # Práctica 47: Generación de bibliotecas moleculares con RDKit
 
-```{admonition} Practice Overview
+```{admonition} Resumen de la práctica
 :class: tip
 **Thematic Block**: 17 - Chemical Space Exploration  
 **Difficulty Level**: Intermediate  

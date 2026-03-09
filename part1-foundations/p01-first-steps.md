@@ -1,6 +1,6 @@
 # Práctica 1: De SMILES a coordenadas 3D – Grafos moleculares y representaciones químicas
 
-```{admonition} Practice Overview
+```{admonition} Resumen de la práctica
 :class: tip
 **Thematic Block**: 1 - Structure Generation and Conformational Space  
 **Difficulty Level**: Basic  
