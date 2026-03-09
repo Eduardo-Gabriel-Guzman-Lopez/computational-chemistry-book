@@ -1,37 +1,36 @@
-name: Build and deploy book to gh-pages
+name: deploy-book
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+
+      - name: checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: install python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install jupyter-book ghp-import
+          pip install jupyter-book
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Build book
+      - name: build book
         run: |
           jupyter-book build .
 
-      - name: Publish to gh-pages
+      - name: install ghp-import
+        run: pip install ghp-import
+
+      - name: deploy
         run: |
           ghp-import -n -p -f _build/html
