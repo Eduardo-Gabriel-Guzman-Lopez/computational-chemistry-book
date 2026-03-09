@@ -1,0 +1,66 @@
+/* custom.css: extend Jupyter Book with PDF-style palette
+   inspired by libro_computacional.sty colors */
+:root {
+  --qc-blue: #0F2747;
+  --qc-teal: #2A6F97;
+  --qc-light: #DCE6F2;
+  --qc-gray: #5D6D7E;
+  --qc-line: #AABBD0;
+}
+
+/* body text and links */
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+a {
+  color: var(--qc-teal);
+}
+a:hover {
+  color: var(--qc-blue);
+}
+
+/* navbar and footer accents */
+.jp-TopSiteLogo a {
+  color: var(--qc-blue) !important;
+}
+.jb-header {
+  background-color: var(--qc-light);
+}
+
+/* admonitions styled like advertencia/notameto */
+.admonition.note,
+.admonition.tip,
+.admonition.caution,
+.admonition.warning,
+.admonition.important {
+  border-left: 4px solid var(--qc-teal);
+  background-color: var(--qc-light);
+}
+.admonition.note .admonition-title,
+.admonition.tip .admonition-title {
+  color: var(--qc-blue);
+}
+
+/* code blocks */
+.highlight pre {
+  background: #f8f8f8;
+}
+
+/* headers use qcblue color */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--qc-blue);
+}
+
+/* strengthen blockquote appearance */
+blockquote {
+  border-left: 4px solid var(--qc-line);
+  padding-left: 1em;
+  color: var(--qc-gray);
+}
+
+/* make the main content narrower for book feel */
+.container, .page {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}

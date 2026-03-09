@@ -22,6 +22,12 @@ html:
   use_repository_button: true
   use_edit_page_button: true
   home_page_in_navbar: true
+  # add custom CSS and logo/cover graphic
+  favicon: assets/images/logo.png
+  logo: assets/images/logo.png
+  extra_css:
+    - _static/custom.css
+
 
 # Launch buttons for interactivity
 launch_buttons:
