@@ -4,28 +4,28 @@
 format: jb-book
 root: intro
 parts:
-  - caption: "Part I: Foundations of Quantum Chemistry"
+  - caption: "Parte I: Fundamentos de química cuántica"
     chapters:
       - file: part1-foundations/p01-first-steps
-        title: "Practice 1: First Steps with Gaussian and ORCA"
+        title: "Práctica 1: Primeros pasos con Gaussian y ORCA"
       # Future practices will be added here
       # - file: part1-foundations/p02-name
       # - file: part1-foundations/p03-name
 
-  - caption: "Part II: Chemical Reactivity"
+  - caption: "Parte II: Reactividad química"
     chapters:
       - file: part2-reactivity/p19-reaction-analysis
-        title: "Practice 19: Reaction Energy Analysis"
+        title: "Práctica 19: Análisis de energías de reacción"
       # Future practices will be added here
 
-  - caption: "Part III: Reaction Mechanisms"
+  - caption: "Parte III: Mecanismos de reacción"
     chapters:
       - file: part3-mechanisms/p33-transition-states
-        title: "Practice 33: Transition State Analysis"
+        title: "Práctica 33: Análisis de estados de transición"
       # Future practices will be added here
 
-  - caption: "Part IV: AI in Cheminformatics"
+  - caption: "Parte IV: IA en quimioinformática"
     chapters:
       - file: part4-ai-cheminformatics/p47-molecular-libraries
-        title: "Practice 47: Molecular Library Generation with RDKit"
+        title: "Práctica 47: Generación de bibliotecas moleculares con RDKit"
       # Future practices will be added here
