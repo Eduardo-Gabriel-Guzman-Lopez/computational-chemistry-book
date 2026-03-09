@@ -10,37 +10,37 @@
 
 ## Introducción
 
-Before performing any quantum mechanical calculation, a molecule must exist as a computational object with explicit three-dimensional coordinates. This step, seemingly trivial, involves methodological decisions with direct consequences on the quality of all subsequent calculations: a poorly constructed initial geometry may converge to an incorrect minimum, produce spurious imaginary frequencies, or generate numerical results that don't correspond to any real chemical species.
+Antes de realizar cualquier cálculo cuántico, una molécula debe existir como un objeto computacional con coordenadas tridimensionales explícitas. Este paso, aparentemente trivial, encierra decisiones metodológicas con consecuencias directas sobre la calidad de todos los cálculos posteriores: una geometría inicial mal construida puede converger a un mínimo incorrecto, producir frecuencias imaginarias espurias o generar resultados numéricos que no corresponden a ninguna especie química real.
 
-The most common representation in cheminformatics is **SMILES** (*Simplified Molecular Input Line Entry System*), a text string that encodes molecular connectivity through precise grammatical rules. A SMILES like `CC(=O)Nc1ccccc1` unambiguously describes acetanilide; however, it contains no information about bond angles, bond lengths, or the spatial arrangement of atoms. Converting from this linear string to a set of Cartesian coordinates $(x_i, y_i, z_i)$ is the problem this practice solves.
+La representación más común en quimioinformática es el **SMILES** (*Simplified Molecular Input Line Entry System*), una cadena de texto que codifica la conectividad de una molécula mediante reglas gramaticales precisas. Un SMILES como `CC(=O)Nc1ccccc1` describe sin ambigüedad la acetanilida; sin embargo, no contiene información alguna sobre los ángulos de enlace, las longitudes de enlace o la disposición espacial de los átomos. Pasar de esa cadena lineal a un conjunto de coordenadas cartesianas $(x_i, y_i, z_i)$ es el problema que resuelve esta práctica.
 
-Modern tools—primarily RDKit and OpenBabel—implement 3D embedding algorithms that combine empirical geometric rules, force fields, and, in the case of the ETKDG algorithm (*Experimental-Torsion distance geometry with basic Knowledge*), dihedral angle distributions extracted from the Cambridge Structural Database.
+Las herramientas modernas —principalmente RDKit y OpenBabel— implementan algoritmos de incrustación tridimensional que combinan reglas geométricas empíricas, campos de fuerza y, en el caso del algoritmo ETKDG (*Experimental-Torsion distance geometry with basic Knowledge*), distribuciones de ángulos diedros extraídas de la Cambridge Structural Database.
 
 ## Objetivos de aprendizaje
 
 ### Conceptuales
-- Distinguish between 0D (formula), 1D (SMILES, InChI), 2D (graph), and 3D (Cartesian coordinates) molecular representations
-- Understand how distance geometry (DG) based embedding algorithms work and why they produce different geometries in each execution
-- Justify the FF → xTB protocol as a compromise between speed and geometric quality
+- Distinguir entre representaciones moleculares 0D (fórmula), 1D (SMILES, InChI), 2D (grafo) y 3D (coordenadas cartesianas) y entender qué información contienen y qué omiten.
+- Comprender el funcionamiento de los algoritmos de incrustación basados en geometría de distancias (DG) y por qué producen geometrías diferentes en cada ejecución.
+- Justificar el protocolo FF → xTB como un compromiso entre velocidad y calidad geométrica para cálculos posteriores.
 
 ### Procedimentales
-- Use RDKit from a Python script
-- Convert between molecular formats (`.smi`, `.mol2`, `.xyz`, `.sdf`)
-- Execute a GFN2-xTB optimization and verify convergence
-- Visualize 3D structures with py3Dmol
+- Utilizar RDKit desde un script en Python.
+- Convertir entre formatos moleculares (`.smi`, `.mol2`, `.xyz`, `.sdf`).
+- Ejecutar una optimización con GFN2-xTB y verificar la convergencia.
+- Visualizar estructuras 3D con py3Dmol.
 
 ## Sistema modelo: cafeína
 
-The seed molecule for this practice is **caffeine** (`Cn1cnc2c1c(=O)n(c(=O)n2C)C`, CAS 58-08-2), a molecule with a purine heterocyclic core, three methyl groups, and two carbonyl groups. It was chosen because:
+La molécula semilla para esta práctica es la **cafeína** (`Cn1cnc2c1c(=O)n(c(=O)n2C)C`, CAS 58-08-2), una molécula con un núcleo heterocíclico de purina, tres grupos metilo y dos carbonilos. Se eligió porque:
 
-1. It's small but non-trivial (24 heavy atoms)
-2. It has an aromatic system and polar groups that challenge the force field
-3. Its crystal structure is well-determined, allowing geometry validation
-4. It's a molecule everyone knows!
+1. Es pequeña pero no trivial (24 átomos pesados).
+2. Posee un sistema aromático y grupos polares que ponen a prueba el campo de fuerza.
+3. Su estructura cristalina está bien determinada, permitiendo validar la geometría.
+4. ¡Es una molécula que todos conocen!
 
 ### Pregunta de investigación
 
-> Does the geometry automatically generated by ETKDG + MMFF94 + GFN2-xTB reproduce the bond lengths and angles of the caffeine crystal with an error of less than 2%? Which atoms or regions show the largest deviation?
+> ¿La geometría generada automáticamente por ETKDG + MMFF94 + GFN2-xTB reproduce las longitudes y ángulos de enlace del cristal de cafeína con un error menor al 2 %? ¿Qué átomos o regiones de la molécula muestran la mayor desviación?
 
 ## Protocolo computacional
 
