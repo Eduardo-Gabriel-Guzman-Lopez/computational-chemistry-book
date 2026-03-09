@@ -1,4 +1,4 @@
-# Practice 47: Molecular Library Generation with RDKit
+# Práctica 47: Generación de bibliotecas moleculares con RDKit
 
 ```{admonition} Practice Overview
 :class: tip
@@ -8,24 +8,24 @@
 **Pipeline**: SMILES scaffold → derivative enumeration → 3D generation → Lipinski/Veber filtering → energy screening → structured dataset
 ```
 
-## Introduction
+## Introducción
 
-The chemical space of stable organic molecules with up to 30 non-hydrogen atoms is estimated at $10^{60}$ compounds. No laboratory can synthesize and test that quantity, but computational chemistry can **virtually enumerate** a bounded region of that space—for example, all derivatives of a bioactive scaffold with a fixed set of substituents—and **screen** the generated candidates with physicochemical criteria before committing synthesis time or expensive DFT calculations.
+El espacio químico de las moléculas orgánicas estables con hasta 30 átomos no-hidrógeno se estima en $10^{60}$ compuestos. Ningún laboratorio puede sintetizar y ensayar esa cantidad, pero la química computacional puede **enumerar virtualmente** una región acotada de ese espacio —por ejemplo, todos los derivados de un cabezal bioactivo con un conjunto fijo de sustituyentes— y **cribar** los candidatos generados con criterios fisicoquímicos antes de comprometer tiempo de síntesis o cálculo DFT.
 
-This *generate-then-filter* workflow is the entry point for AI-driven molecular design:
+Este flujo de trabajo —*generar y luego filtrar*— es el punto de entrada del diseño molecular asistido por IA:
 
 ```
-Enumeration (P47) → Representation & Similarity (P49-P50) 
-    → Machine Learning (P51-P53) → De Novo Design (P54-P55)
+Enumeración (P47) → Representación y similitud (P49-P50)
+    → Aprendizaje automático (P51-P53) → Diseño de novo (P54-P55)
 ```
 
-## Theoretical Framework
+## Marco teórico
 
-### 1. SMILES and SMARTS: The Language of Chemical Space
+### 1. SMILES y SMARTS: el lenguaje del espacio químico
 
 SMILES (*Simplified Molecular Input Line Entry System*) encodes molecular connectivity as a text string. SMARTS (*SMILES arbitrary target specification*) extends SMILES for substructure searching and reaction pattern definition.
 
-### 2. Lipinski's Rule of Five
+### 2. Regla de los cinco de Lipinski
 
 The Lipinski criteria (1997) identify molecules with low probability of oral bioavailability:
 
@@ -38,13 +38,13 @@ The Lipinski criteria (1997) identify molecules with low probability of oral bio
 
 **Veber's additions:** Rotatable bonds ≤ 10 and Polar Surface Area (PSA) ≤ 140 Å²
 
-### 3. GFN2-xTB for Energy Screening
+### 3. GFN2-xTB para cribado energético
 
 The semiempirical GFN2-xTB method calculates total energy with sufficient accuracy for screening: mean error in formation enthalpies < 3 kcal/mol, calculation time ~1s per molecule (up to 50 heavy atoms).
 
-## Computational Protocol
+## Protocolo computacional
 
-### Step 1: Define the Scaffold and Substituents
+### Paso 1: Definir el cabezal y los sustituyentes
 
 ```{code-cell} ipython3
 from rdkit import Chem
