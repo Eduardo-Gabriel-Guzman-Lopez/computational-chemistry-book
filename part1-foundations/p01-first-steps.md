@@ -1,110 +1,205 @@
-# Práctica 1: De SMILES a coordenadas 3D – Grafos moleculares y representaciones químicas
+# Práctica 1: Transformación de formatos a coordenadas tridimensionales. Grafos moleculares y representaciones químicas
 
-```{admonition} Resumen de la práctica
-:class: tip
+```{admonition} Metadatos de la práctica
+:class: note
 **Bloque temático**: 1 – Generación de estructuras y espacio conformacional  
+**Número de práctica**: 1  
 **Nivel de dificultad**: Básico  
-**Tiempo estimado**: 1h (semilla) + 2h (bosque y análisis)  
-**Flujo central**: SMILES → grafo molecular → geometría 3D (ETKDG) → pre-opt FF → opt semiempírica (GFN2-xTB) → dataset estructural
+**Tiempo estimado**: 1 h (semilla) + 2 h (bosque y análisis)  
+**Modalidad**: Individual  
+**Pipeline central**: SMILES → grafo molecular → geometría 3D (ETKDG) → pre-opt FF (MMFF94) → opt semiempírica (GFN2-xTB) → dataset estructural  
+**Hardware mínimo**: 2 GB RAM, procesador de doble núcleo ≥ 1.5 GHz (laptop de 2012 o posterior)  
+**Modo sin conexión**: Parcial — internet requerida solo para instalación inicial  
+**Acceso en nube**: [Colab P01](https://colab.research.google.com/drive/p01_cafeina)
 ```
 
 ## Introducción
 
 Antes de realizar cualquier cálculo cuántico, una molécula debe existir como un objeto computacional con coordenadas tridimensionales explícitas. Este paso, aparentemente trivial, encierra decisiones metodológicas con consecuencias directas sobre la calidad de todos los cálculos posteriores: una geometría inicial mal construida puede converger a un mínimo incorrecto, producir frecuencias imaginarias espurias o generar resultados numéricos que no corresponden a ninguna especie química real.
 
-La representación más común en quimioinformática es el **SMILES** (*Simplified Molecular Input Line Entry System*), una cadena de texto que codifica la conectividad de una molécula mediante reglas gramaticales precisas. Un SMILES como `CC(=O)Nc1ccccc1` describe sin ambigüedad la acetanilida; sin embargo, no contiene información alguna sobre los ángulos de enlace, las longitudes de enlace o la disposición espacial de los átomos. Pasar de esa cadena lineal a un conjunto de coordenadas cartesianas $(x_i, y_i, z_i)$ es el problema que resuelve esta práctica.
+La representación más común en quimioinformática es el **SMILES** (*Simplified Molecular Input Line Entry System*), una cadena de texto que codifica la conectividad molecular mediante reglas gramaticales precisas. Un SMILES como `CC(=O)Nc1ccccc1` describe sin ambigüedad la acetanilida; sin embargo, no contiene información sobre los ángulos de enlace, las longitudes de enlace ni la disposición espacial de los átomos. Pasar de esa cadena lineal a un conjunto de coordenadas cartesianas $(x_i, y_i, z_i)$ es el problema que resuelve esta práctica.
 
-Las herramientas modernas —principalmente RDKit y OpenBabel— implementan algoritmos de incrustación tridimensional que combinan reglas geométricas empíricas, campos de fuerza y, en el caso del algoritmo ETKDG (*Experimental-Torsion distance geometry with basic Knowledge*), distribuciones de ángulos diedros extraídas de la Cambridge Structural Database.
+Las herramientas modernas —principalmente RDKit y OpenBabel— implementan algoritmos de incrustación tridimensional que combinan reglas geométricas empíricas, campos de fuerza y, en el caso del algoritmo ETKDG (*Experimental-Torsion distance geometry with basic Knowledge*), distribuciones de ángulos diedros extraídas de la Cambridge Structural Database. El resultado es una geometría de partida razonable en pocos milisegundos, sin importar el tamaño de la molécula.
+
+Una vez disponible la geometría inicial, la práctica introduce el primer pipeline del manual: pre-optimización con un campo de fuerza (MMFF94) seguida de optimización semiempírica con GFN2-xTB. Este protocolo de dos pasos es suficiente para la mayoría de las moléculas orgánicas pequeñas y medianas, y constituye el punto de partida estándar para los cálculos de estructura electrónica del Bloque 2.
+
+En términos del modelo Semilla–Bosque: la **semilla** es la construcción y optimización de una molécula sencilla que el estudiante ejecuta por sí mismo. El **bosque** es un dataset de 50 moléculas orgánicas con diversidad estructural —aromáticos, heteroaromáticos, sistemas flexibles y casos difíciles— para los cuales el mismo pipeline ya fue ejecutado. El análisis del bosque permite identificar qué características estructurales hacen que la incrustación 3D sea más o menos confiable, y cómo la energía de pre-optimización se correlaciona con descriptores topológicos básicos.
 
 ## Marco teórico
 
-### Representaciones moleculares: De lo lineal a lo tridimensional
+### Conceptos clave
 
-Una molécula puede codificarse en distintos niveles de detalle:
+**1. Representaciones moleculares y su jerarquía informacional.**  
+Una molécula puede codificarse en distintos niveles de detalle. La fórmula molecular (0D) sólo indica composición. El SMILES o InChI (1D) codifican la conectividad y el orden de enlace. El grafo 2D añade estereoquímica plana. Las coordenadas cartesianas 3D son las únicas que permiten calcular propiedades que dependen de la geometría (energías, frecuencias, densidades electrónicas). Cada nivel es una proyección: al bajar de 3D a 1D se pierde información irreversiblemente.
 
-- **0D (Fórmula molecular)**: Solo composición, sin conectividad  
-- **1D (SMILES, InChI)**: Conectividad lineal y orden de enlace  
-- **2D (Grafo)**: Topología 2D, incluye estereoquímica plana  
-- **3D (Coordenadas cartesianas)**: Posición espacial de cada átomo  
+**2. Geometría de distancias (DG) e incrustación 3D.**  
+El algoritmo ETKDG convierte un grafo molecular en coordenadas cartesianas resolviendo un problema de optimización sobre matrices de distancias interatómicas. Los límites de cada distancia se obtienen de tres fuentes: reglas de enlace covalente, restricciones de no-penetración van der Waals, y distribuciones estadísticas de ángulos diedros extraídas de estructuras cristalinas. El resultado no es único: distintas semillas aleatorias producen geometrías de partida diferentes, todas igualmente válidas como punto de inicio.
 
-Cada nivel es una proyección: al bajar de 3D a 1D se pierde información irreversiblemente. Las coordenadas cartesianas 3D son las **únicas** que permiten calcular propiedades que dependen de la geometría (energías, frecuencias, densidades electrónicas).
+**3. Campos de fuerza (FF) y su rol como pre-optimizadores.**  
+Un campo de fuerza es una función de energía potencial empírica que describe la energía como suma de contribuciones de enlace, ángulo, torsión e interacciones no covalentes. MMFF94 está parametrizado para moléculas orgánicas pequeñas y es adecuado para corregir geometrías iniciales ETKDG. No es apropiado para describir reacciones, rupturas de enlace o sistemas con metales de transición.
 
-### Algoritmo ETKDG: Geometría de distancias
+**4. Métodos semiempíricos ajustados (GFN2-xTB).**  
+GFN2-xTB es un método de enlace fuerte autoconsistente (*tight-binding*) parametrizado para reproducir geometrías y energías de conformación de moléculas orgánicas e inorgánicas con precisión comparable a DFT/def2-SVP, pero con un costo computacional 3–4 órdenes de magnitud menor. La energía total contiene contribuciones electrónicas, de dispersión (D4) y de repulsión nuclear. No es apropiado para excitaciones electrónicas ni para propiedades que requieren descripción explícita de la función de onda.
 
-El algoritmo ETKDG convierte un grafo molecular en coordenadas cartesianas resolviendo un problema de optimización sobre matrices de distancias interatómicas. Los límites de cada distancia se obtienen de tres fuentes:
+**5. RMSD como métrica de similitud geométrica.**  
+El RMSD (*Root Mean Square Deviation*) entre dos geometrías se define como:
 
-1. **Reglas de enlace covalente**: distancias esperadas para cada tipo de enlace  
-2. **Restricciones van der Waals**: impedimentos de no-penetración  
-3. **Estadísticas cristalográficas**: distribuciones de ángulos diedros extraídas de la CSD  
+$$\mathrm{RMSD} = \sqrt{\frac{1}{N}\sum_{i=1}^{N}\left|\mathbf{r}_i^{(A)} - \mathbf{r}_i^{(B)}\right|^2}$$
 
-El resultado **no es único**: distintas semillas aleatorias producen geometrías diferentes, todas igualmente válidas como punto de inicio.
+donde $N$ es el número de átomos y los vectores $\mathbf{r}_i$ son las coordenadas de cada átomo tras la superposición óptima. Un RMSD < 0.5 Å entre la geometría calculada y el cristal indica reproducción aceptable.
 
-### Campo de fuerza MMFF94
+### Preguntas previas
 
-Un campo de fuerza es una función de energía potencial **empírica** que describe la energía como suma de:
-- Contribuciones de enlace ($\propto (r - r_0)^2$)  
-- Ángulos ($\propto (\theta - \theta_0)^2$)  
-- Torsiones (diedros, $\cos(n\phi)$)  
-- Interacciones no covalentes (van der Waals, Coulomb)  
+Responde estas preguntas **en tu cuaderno** antes de leer las secciones posteriores. No existe una única respuesta correcta; el objetivo es registrar tu razonamiento previo y compararlo después con los resultados reales.
 
-MMFF94 está parametrizado para moléculas orgánicas pequeñas y es adecuado para corregir geometrías iniciales ETKDG. **No es apropiado** para reacciones, rupturas de enlace o sistemas con metales de transición.
+1. **(Conceptual)** El SMILES de la cafeína no contiene coordenadas. Sin embargo, tú ya sabes que la cafeína tiene un anillo purínico. ¿Cómo "sabe" el algoritmo ETKDG que ese anillo debe ser plano? ¿Qué pasaría si la molécula tuviera un anillo que no aparece frecuentemente en la CSD?
 
-### Métodos semiempíricos: GFN2-xTB
+2. **(Predictivo)** El campo de fuerza MMFF94 fue desarrollado principalmente para moléculas orgánicas con C, H, N, O, S. La cafeína tiene cuatro átomos de nitrógeno en distintos entornos. ¿Esperas que MMFF94 describa bien todos esos entornos? ¿Cuál crees que será el enlace con mayor error antes de la corrección xTB?
 
-GFN2-xTB es un método de enlace fuerte autoconsistente (*tight-binding*) parametrizado para reproducir geometrías y energías de conformación con precisión comparable a DFT/def2-SVP, pero con costo computacional **3–4 órdenes de magnitud menor**.
+3. **(Crítico)** El bosque de esta práctica incluye diez "casos difíciles": moléculas muy tensionadas como el cubano o espiro-compuestos. ¿Por qué crees que la incrustación automática podría fallar en esos sistemas? ¿Qué alternativa propondrías para construir su geometría?
 
-La energía total contiene:
-- Contribución electrónica (Hamiltoniano efectivo)  
-- Dispersión (D4)  
-- Repulsión nuclear  
+### Recursos de consulta rápida
 
-GFN2-xTB es apropiado para **optimización geométrica de moléculas orgánicas**. **No es apropiado** para excitaciones electrónicas ni propiedades que requieren descripción explícita de la función de onda.
+- **RDKit Getting Started (en línea, inglés):** https://www.rdkit.org/docs/GettingStartedInPython.html — cubre los módulos `Chem`, `AllChem` y `rdMolDescriptors`.
+
+- **Tutorial xTB (en línea, inglés):** https://xtb-docs.readthedocs.io/en/latest/setup.html — instalación, opciones de línea de comandos y ejemplos.
+
+- **Química computacional sin matemáticas, Lewars (2024):** Capítulo 2 (representaciones moleculares) y Capítulo 3 (campos de fuerza).
+
+- **Dataset público QM9:** https://doi.org/10.6084/m9.figshare.978904 — 133,885 moléculas orgánicas pequeñas con geometrías DFT.
 
 ## Objetivos de aprendizaje
 
 ### Conceptuales
+
 - Distinguir entre representaciones moleculares 0D, 1D, 2D y 3D, e identificar qué información contiene y qué omite cada una.
 - Explicar el principio del algoritmo ETKDG y por qué produce geometrías diferentes con distintas semillas aleatorias.
-- Justificar el protocolo FF → xTB como un compromiso entre velocidad y calidad geométrica para cálculos posteriores.
+- Justificar el protocolo FF → xTB como compromiso entre velocidad y calidad para el punto de partida de cálculos DFT.
 
 ### Procedimentales
-- Utilizar RDKit desde un script en Python.
-- Convertir entre formatos moleculares (`.smi`, `.mol2`, `.xyz`, `.sdf`).
-- Ejecutar una optimización con GFN2-xTB y verificar la convergencia.
-- Visualizar estructuras 3D con py3Dmol.
 
-## Sistema modelo: cafeína
+- Instalar y usar RDKit y xtb desde un script de Python y desde la línea de comandos.
+- Convertir entre formatos moleculares (`.smi`, `.xyz`, `.sdf`) usando RDKit y OpenBabel.
+- Ejecutar una optimización GFN2-xTB, verificar la convergencia en el log y extraer la geometría resultante.
+- Visualizar y comparar estructuras 3D en Avogadro2 o py3Dmol.
 
-La molécula semilla para esta práctica es la **cafeína** (`Cn1cnc2c1c(=O)n(c(=O)n2C)C`, CAS 58-08-2), una molécula con un núcleo heterocíclico de purina, tres grupos metilo y dos carbonilos. Se eligió porque:
+### Investigación y datos
 
-1. Es pequeña pero no trivial (24 átomos pesados).
-2. Posee un sistema aromático y grupos polares que ponen a prueba el campo de fuerza.
-3. Su estructura cristalina está bien determinada, permitiendo validar la geometría.
-4. ¡Es una molécula que todos conocen!
+- Construir un dataset de 50 moléculas con variables: SMILES, número de átomos pesados, enlaces rotativos, energía GFN2-xTB, tiempo de optimización y éxito/fallo de incrustación.
+- Identificar qué clases estructurales presentan mayor tasa de fallo en la incrustación 3D automática.
+- Correlacionar la energía de la geometría optimizada con descriptores topológicos del bosque.
 
-### Pregunta de investigación
+## Recursos y prerrequisitos
 
-> ¿La geometría generada automáticamente por ETKDG + MMFF94 + GFN2-xTB reproduce las longitudes y ángulos de enlace del cristal de cafeína con un error menor al 2 %? ¿Qué átomos o regiones de la molécula muestran la mayor desviación?
+### Conocimientos previos
 
-## Flujo de la práctica
+- **(Necesario)** Nomenclatura IUPAC de orgánicos bás icos.
+- **(Necesario)** Enlace covalente, hibridación y geometría molecular (TRPEV/VSEPR).
+- **(Necesario)** Terminal de Linux/macOS: navegar directorios, ejecutar scripts, redirigir salida.
+- **(Necesario)** Python: variables, listas, bucles `for`, importar módulos.
+- **(Recomendable)** Haber leído el Capítulo 1 del manual (Estructura y flujos de trabajo).
 
-```{mermaid}
-flowchart LR
-    A["SMILES<br/>(cadena texto)"] --> B["Grafo molecular<br/>(RDKit)"]
-    B --> C["Geometría 3D<br/>(ETKDG)"]
-    C --> D["Pre-opt FF<br/>(MMFF94)"]
-    D --> E["Opt semiempírica<br/>(GFN2-xTB)"]
-    E --> F["Dataset estructural<br/>(análisis)"]
-    
-    style A fill:#e1f5ff
-    style B fill:#fff3e0
-    style C fill:#f3e5f5
-    style D fill:#e8f5e9
-    style E fill:#fce4ec
-    style F fill:#f1f8e9
+```{admonition} Primera práctica del manual
+**No se asumen conocimientos previos de química computacional.** Si nunca has usado la terminal, completa primero el tutorial `docs/terminal_basica.md` del repositorio del curso (tiempo estimado: 30 min).
 ```
 
+### Software
+
+- **Python** ≥ 3.10 con `rdkit` ≥ 2023.03, `numpy`, `pandas`, `matplotlib`, `seaborn`.
+  ```bash
+  conda env create -f environment_p01.yml
+  conda activate qc-manual
+  ```
+
+- **xtb** ≥ 6.6 — open-source, gratuito (LGPL-3).
+  ```bash
+  conda install -c conda-forge xtb
+  ```
+
+- **OpenBabel** ≥ 3.1 — open-source, gratuito (GPL-2).
+  ```bash
+  conda install -c conda-forge openbabel
+  ```
+
+- **Avogadro2** o **py3Dmol** — visualización 3D, ambos gratuitos y multiplataforma.
+
+```{admonition} No requiere software comercial
+**Esta práctica no requiere Gaussian, ORCA ni ningún software comercial.** Todo el pipeline (ETKDG + MMFF94 + GFN2-xTB) se ejecuta con herramientas completamente open-source.
+```
+
+```{admonition} ¿Sin acceso a software local?
+El notebook de Google Colab incluye toda la instalación automatizada. No requiere configuración previa: https://colab.research.google.com/drive/p01_cafeina
+```
+
+### Archivos proporcionados
+
+- `p01_semilla.py` — script base para la semilla.
+- `p01_bosque_smiles.csv` — 50 SMILES con nombre y clase estructural.
+- `p01_bosque_resultados.csv` — dataset pre-calculado.
+- `p01_analisis.py` — script base de análisis.
+- `environment_p01.yml` — entorno conda reproducible.
+- `p01_colab.ipynb` — notebook para Google Colab.
+
+### Recursos computacionales y accesibilidad
+
+```{admonition} Especificaciones técnicas
+**Semilla — CPU**: < 2 min en 1 núcleo (laptop estándar)  
+**Bosque — CPU**: ≈ 15 min en 1 núcleo (pre-calculado)  
+**RAM mínima absoluta**: 2 GB  
+**Espacio en disco**: < 50 MB  
+**Modo sin conexión**: Sí, una vez instalado el entorno conda  
+**Acceso en nube**: [Colab P01](https://colab.research.google.com/drive/p01_cafeina)
+```
+
+```{admonition} Accesibilidad
+**Todos los scripts de análisis generan figuras con etiquetas textuales en ejes y títulos descriptivos, compatibles con lectores de pantalla.** Las tablas de resultados se exportan como CSV con nombres de columna en español. Para adaptaciones específicas (discapacidad visual, daltonismo, etc.), consulta `docs/accesibilidad.md` en el repositorio del curso.
+```
+
+## Experimento semilla
+
+### Sistema modelo
+
+La semilla de esta práctica es la **cafeína** (`Cn1cnc2c1c(=O)n(c(=O)n2C)C`, CAS 58-08-2), elegida por cuatro razones simultáneas:
+
+1. Tiene 24 átomos pesados — pequeña pero no trivial.
+2. Posee un núcleo heterocíclico aromático y grupos carbonilo que ponen a prueba el campo de fuerza.
+3. Su estructura cristalina está bien determinada por difracción de rayos X, permitiendo validación cuantitativa.
+4. Es una molécula que todos los estudiantes conocen, facilitando la conexión con la intuición química previa.
+
+### Pregunta química concreta
+
+> ¿La geometría generada automáticamente mediante ETKDG + MMFF94 + GFN2-xTB reproduce las longitudes y ángulos de enlace del cristal de cafeína con un error medio < 1.5 %? ¿Qué región de la molécula muestra la mayor desviación, y a qué se debe?
+
+### Nivel de teoría
+
+```{admonition} Teoría y métodos
+**Método de incrustación**: ETKDG v3 (RDKit 2023)  
+**Campo de fuerza**: MMFF94 (pre-optimización)  
+**Método semiempírico**: GFN2-xTB (optimización final)  
+**Solvente**: Vacío (fase gas)  
+**Convergencia**: Gradiente RMS < 5 × 10⁻⁴ a.u. (`--opt tight`)  
+
+GFN2-xTB reproduce longitudes de enlace de orgánicos con error medio < 0.01 Å respecto a DFT/def2-SVP, con costo 3–4 órdenes de magnitud menor.
+```
+
+### Hipótesis inicial
+
+Basándome en las preguntas previas, espero que el anillo purínico sea plano (o casi plano) en la geometría GFN2-xTB, porque los sistemas aromáticos están sobrerrepresentados en la CSD y el algoritmo ETKDG los reconoce bien. El mayor error debería aparecer en los grupos metilo ($-$CH₃), cuya posición rotacional tiene energía plana y el algoritmo puede colocar en una orientación sub-óptima. Esta hipótesis será verificable comparando el RMSD de los C del anillo frente al RMSD de los carbonos de los metilos respecto al cristal.
+
 ## Protocolo computacional
+
+El protocolo consta de **6 pasos principales** que transforman una cadena SMILES en una geometría 3D optimizada:
+
+![Flujo del protocolo: SMILES → Geometría 3D optimizada](../assets/images/p01-protocol-diagram.png)
+
+**Detalles de cada paso:**
+
+- **Paso 1**: Construir el grafo molecular a partir del SMILES
+- **Paso 2**: Visualizar la estructura 2D para verificación
+- **Paso 3**: Incrustación 3D con ETKDG
+- **Paso 4**: Pre-optimización con campo de fuerza MMFF94
+- **Paso 5**: Visualización 3D con py3Dmol
+- **Paso 6**: Exportar para optimización semiempírica (GFN2-xTB)
 
 ### Paso 1: Construir el grafo molecular
 
@@ -197,277 +292,213 @@ visor.show()
 
 ### Paso 6: Exportar para optimización semiempírica
 
-La geometría optimizada con el campo de fuerza puede refinarse aún más utilizando GFN2-xTB, un método semiempírico que proporciona geometrías de calidad cercana a DFT a una fracción del costo computacional.
-
-::::{tab-set}
-
-:::{tab-item} GFN2-xTB (Recomendado)
-```bash
-# Guardar archivo XYZ para optimización con xTB
-# Desde Python:
+```{code-cell} ipython3
+# Guardar archivo XYZ para optimización xTB
 from rdkit.Chem import rdmolfiles
 rdmolfiles.MolToXYZFile(mol_h, 'cafeina_FF.xyz')
-
-# Luego ejecuta desde terminal:
-xtb cafeina_FF.xyz --opt tight --chrg 0 --uhf 0 --gfn 2 > cafeina_xtb.out
-
-# Verifica convergencia:
-grep "GEOMETRY OPTIMIZATION CONVERGED" cafeina_xtb.out
-
-# Geometría optimizada guardada en: xtbopt.xyz
+print("Archivo cafeina_FF.xyz guardado")
 ```
 
-**Parámetros clave:**
+Luego, desde terminal:
+
+```bash
+xtb cafeina_FF.xyz --opt tight --chrg 0 --uhf 0 --gfn 2 > cafeina_xtb.out
+```
+
+Para verificar convergencia:
+
+```bash
+grep "GEOMETRY OPTIMIZATION CONVERGED" cafeina_xtb.out
+```
+
+La geometría optimizada se guarda en `xtbopt.xyz`. Parámetros clave:
+
 - `--opt tight`: Criterio de convergencia más estricto (recomendado para puntos de partida DFT)
 - `--chrg 0`: Carga molecular total
 - `--uhf 0`: Número de electrones sin aparear (0 para capa cerrada)
 - `--gfn 2`: Solicita explícitamente el método GFN2-xTB
-:::
 
-:::{tab-item} Gaussian
-```
-%chk=cafeina.chk
-%mem=4GB
-%nproc=4
-# PM7 Opt
+## Control de calidad y validación
 
-Cafeina optimización semiempírica
+### Criterios de convergencia
 
-0 1
-[coordenadas del archivo XYZ]
+```{admonition} Convergencia xTB
+**Mensaje de convergencia**: `GEOMETRY OPTIMIZATION CONVERGED` en el log  
+**Gradiente RMS (tight)**: < 2 × 10⁻⁴ Hartree/Bohr  
+**Desplazamiento RMS**: < 4 × 10⁻⁴ Bohr  
+**Frecuencias imaginarias**: 0 (verificar opcionalmente con `xtb --hess`)
 ```
 
-**Notas:**
-- PM7 es el método semiempírico más preciso de Gaussian
-- Usa `geom=allcheck` para leer la geometría del archivo de chequeo
-:::
+### Diagnósticos estructurales
 
-:::{tab-item} ORCA
-```
-! PM3 Opt
-%pal nprocs 4 end
+Verificar que la geometría optimizada satisfaga:
 
-* xyzfile 0 1 cafeina_FF.xyz
-```
+- **Planaridad del anillo**: RMSD de los átomos del anillo respecto al plano de mínimos cuadrados < 0.05 Å.
+- **Longitudes de enlace características**:
+  - C=O carbonilo: 1.20 ± 0.02 Å
+  - C–N aromático: 1.33 ± 0.03 Å
+  - C–N metilo: 1.46 ± 0.02 Å
+- **Sin colisiones**: distancia mínima entre no enlazados > 2.0 Å.
+- **Hidrógenos en posición escalonada** respecto al enlace C–N adyacente.
 
-**Notas:**
-- ORCA incluye PM3, pero se recomienda GFN2-xTB para moléculas orgánicas
-- Instala xtb por separado para mejores resultados con ORCA
-:::
+### Validación frente a la estructura cristalina
 
-::::
+La estructura cristalina de la cafeína monohidrato fue determinada por difracción de rayos X (CSD: CAFINE01). Completar la tabla y calcular el error porcentual:
 
-### Paso 7: Extraer coordenadas cartesianas
+| Enlace | Exp. (Å) | Calc. (Å) | Error (%) |
+|--------|----------|-----------|-----------|
+| C8=O1  | 1.235    | …         | …         |
+| C2=O3  | 1.239    | …         | …         |
+| N1–C8  | 1.374    | …         | …         |
+| N3–C4  | 1.327    | …         | …         |
+| **Error medio** | | | … |
 
-```{code-cell} ipython3
-import numpy as np
+Se acepta el resultado si el error medio < 1.5 %.
 
-def leer_xyz(mol_h):
-    """Extraer coordenadas del objeto molecular RDKit."""
-    conf = mol_h.GetConformer()
-    atomos = []
-    coords = []
-    for i, atomo in enumerate(mol_h.GetAtoms()):
-        atomos.append(atomo.GetSymbol())
-        pos = conf.GetAtomPosition(i)
-        coords.append([pos.x, pos.y, pos.z])
-    return atomos, np.array(coords)
+## Expansión del espacio químico (el bosque)
 
-atomos, coords = leer_xyz(mol_h)
+### Estrategia de expansión
 
-# Mostrar primeros átomos
-print("Átomo    X        Y        Z")
-print("-" * 35)
-for i in range(min(10, len(atomos))):
-    print(f"{atomos[i]:4s}  {coords[i,0]:8.4f} {coords[i,1]:8.4f} {coords[i,2]:8.4f}")
-print(f"... ({len(atomos)} átomos en total)")
-```
+El bosque contiene 50 moléculas orgánicas en cinco clases:
 
-## Control de calidad
+- **Aromáticos carbocíclicos** (10): benceno, naftaleno, antraceno, pireno y derivados sustituidos.
+- **Heteroaromáticos** (10): piridina, imidazol, tiofeno, indol, quinolina y análogos.
+- **Moléculas flexibles** (10): alcanos lineales C₆–C₁₂, aminoácidos, dipéptidos.
+- **Sistemas con puentes de H intramolecular** (10): salicilaldehído, ácido 2-aminobenzoico y análogos.
+- **Casos difíciles** (10): espiro-compuestos, cubano, biciclo[1.1.0]butano y sistemas con estereoquímica compleja.
 
-### Longitudes de enlace esperadas
+### Dataset pre-calculado
 
-Después de la optimización, verifica que los parámetros estructurales clave coincidan con los valores esperados:
+El bosque completo se proporciona en `p01_bosque_resultados.csv`. El dataset incluye columnas:
 
-| Enlace | Esperado (Å) | Rango aceptable |
-|--------|------------|-----------------|
-| C=O (carbonilo) | 1.22 | 1.20 – 1.24 |
-| C–N (aromático) | 1.33 | 1.30 – 1.36 |
-| C–N (alifático) | 1.46 | 1.44 – 1.48 |
-
-```{code-cell} ipython3
-def calcular_distancia(coords, i, j):
-    """Calcular distancia entre dos átomos."""
-    return np.linalg.norm(coords[i] - coords[j])
-
-# Calcular todas las distancias C-N y C-O
-print("Distancias de enlace seleccionadas:")
-for i, atomo_i in enumerate(atomos):
-    for j, atomo_j in enumerate(atomos):
-        if i < j:
-            d = calcular_distancia(coords, i, j)
-            # Solo mostrar enlaces (aproximadamente)
-            if d < 1.8:
-                print(f"{atomo_i}{i+1}-{atomo_j}{j+1}: {d:.3f} Å")
-```
-
-## Expandir el espacio químico: el bosque
-
-El dataset del bosque contiene 50 moléculas orgánicas seleccionadas para cubrir diversidad estructural:
-
-| Categoría | Ejemplos | Cantidad |
-|-----------|----------|----------|
-| Aromáticos carbocíclicos | benceno, naftaleno, pireno | 10 |
-| Heteroaromáticos | piridina, imidazol, indol | 10 |
-| Moléculas flexibles | alcanos, aminoácidos | 10 |
-| Puentes de H intramolecular | salicilaldehído, ácido 2-aminobenzoico | 10 |
-| Casos difíciles | cubano, espiro-compuestos | 10 |
-
-### Variables del dataset
-
-```{code-cell} ipython3
-import pandas as pd
-
-# Crear estructura de datos del bosque de ejemplo
-columnas_bosque = {
-    'id': 'Identificador de molécula (nombre IUPAC)',
+```python
+columnas = {
+    'id': 'Identificador de molécula',
     'smiles': 'Cadena SMILES',
     'clase': 'Categoría estructural',
     'n_heavy': 'Número de átomos pesados',
     'n_rot_bonds': 'Número de enlaces rotativos',
     'mw': 'Peso molecular (Da)',
-    'embed_ok': 'Éxito de incrustación (True/False)',
+    'embed_ok': 'Éxito de incrustación (1/0)',
     'e_ff_kcalmol': 'Energía MMFF94 (kcal/mol)',
     'e_xtb_hartree': 'Energía GFN2-xTB (Hartree)',
     't_xtb_s': 'Tiempo de optimización xTB (s)'
 }
-
-print("Columnas del dataset:")
-for col, desc in columnas_bosque.items():
-    print(f"  {col:15s} : {desc}")
 ```
 
-### Script de automatización
+## Construcción del dataset
+
+Integrar la semilla (cafeína) con el bosque:
 
 ```{code-cell} ipython3
-def procesar_molecula(smiles, nombre, clase_mol):
-    """Procesar una sola molécula a través del flujo."""
-    resultado = {
-        'id': nombre,
-        'smiles': smiles,
-        'clase': clase_mol
-    }
-    
-    # Analizar SMILES
-    mol = Chem.MolFromSmiles(smiles)
-    if mol is None:
-        resultado['embed_ok'] = False
-        return resultado
-    
-    # Calcular descriptores
-    resultado['n_heavy'] = mol.GetNumHeavyAtoms()
-    resultado['n_rot_bonds'] = rdMolDescriptors.CalcNumRotatableBonds(mol)
-    resultado['mw'] = rdMolDescriptors.CalcExactMolWt(mol)
-    
-    # Incrustación 3D
-    mol_h = Chem.AddHs(mol)
-    params = AllChem.ETKDGv3()
-    params.randomSeed = 42
-    ok = AllChem.EmbedMolecule(mol_h, params)
-    
-    if ok == -1:
-        resultado['embed_ok'] = False
-        return resultado
-    resultado['embed_ok'] = True
-    
-    # Optimización con campo de fuerza
-    ff = AllChem.MMFFGetMoleculeForceField(
-        mol_h, AllChem.MMFFGetMoleculeProperties(mol_h))
-    if ff is None:
-        ff = AllChem.UFFGetMoleculeForceField(mol_h)
-    ff.Minimize(maxIts=2000)
-    resultado['e_ff_kcalmol'] = ff.CalcEnergy()
-    
-    return resultado
+import pandas as pd
 
-# Procesar cafeína como ejemplo
-resultado_cafeina = procesar_molecula(
-    'Cn1cnc2c1c(=O)n(c(=O)n2C)C',
-    'cafeina',
-    'heteroaromatico'
-)
+df = pd.read_csv('p01_bosque_resultados.csv')
 
-print("Resultado del procesamiento de cafeína:")
-for k, v in resultado_cafeina.items():
-    print(f"  {k}: {v}")
+semilla = {
+    'id': 'cafeina',
+    'smiles': 'Cn1cnc2c1c(=O)n(c(=O)n2C)C',
+    'clase': 'heteroaromatico',
+    'n_heavy': 24,
+    'n_rot_bonds': 3,
+    'mw': 194.0804,
+    'embed_ok': 1,
+    'e_ff_kcalmol': ...,  # Completar con tu valor
+    'e_xtb_hartree': ..., # Completar con tu valor
+    't_xtb_s': ...,       # Completar con tu valor
+}
+
+df_final = pd.concat([df, pd.DataFrame([semilla])], ignore_index=True)
+df_final.to_csv('p01_dataset_final.csv', index=False)
+print(df_final.tail(3))
 ```
 
-## Análisis
+## Análisis de resultados
 
-### Código de análisis de ejemplo
+### Estadística descriptiva
 
 ```{code-cell} ipython3
+import pandas as pd
 import matplotlib.pyplot as plt
 
-# Crear dataset de ejemplo para visualización
-datos_muestra = pd.DataFrame([
-    {'id': 'benceno', 'n_heavy': 6, 't_xtb_s': 0.5, 'n_rot_bonds': 0},
-    {'id': 'naftaleno', 'n_heavy': 10, 't_xtb_s': 1.2, 'n_rot_bonds': 0},
-    {'id': 'cafeina', 'n_heavy': 14, 't_xtb_s': 2.1, 'n_rot_bonds': 3},
-    {'id': 'aspirina', 'n_heavy': 13, 't_xtb_s': 1.8, 'n_rot_bonds': 3},
-    {'id': 'dopamina', 'n_heavy': 11, 't_xtb_s': 1.5, 'n_rot_bonds': 4},
-])
+df = pd.read_csv('p01_dataset_final.csv')
+print(df[['n_heavy','n_rot_bonds','e_xtb_hartree','t_xtb_s']].describe().round(4))
+print(f"Tasa de éxito: {df['embed_ok'].mean()*100:.1f}%")
 
-fig, ax = plt.subplots(figsize=(8, 5))
-scatter = ax.scatter(
-    datos_muestra['n_heavy'], 
-    datos_muestra['t_xtb_s'],
-    c=datos_muestra['n_rot_bonds'], 
-    cmap='viridis',
-    s=100, edgecolors='k', linewidths=0.5
-)
-ax.set_xlabel('Número de átomos pesados', fontsize=12)
-ax.set_ylabel('Tiempo de optimización xTB (s)', fontsize=12)
-ax.set_title('Costo computacional vs tamaño molecular', fontsize=14)
-plt.colorbar(scatter, label='Enlaces rotativos')
+# Gráfico: tiempo vs tamaño
+df_ok = df[df['embed_ok'] == 1]
+fig, ax = plt.subplots(figsize=(6, 4))
+sc = ax.scatter(df_ok['n_heavy'], df_ok['t_xtb_s'],
+                c=df_ok['n_rot_bonds'], cmap='viridis',
+                edgecolors='k', linewidths=0.4)
+ax.set_xlabel('Número de átomos pesados')
+ax.set_ylabel('Tiempo GFN2-xTB (s)')
+fig.colorbar(sc, label='Enlaces rotativos')
 plt.tight_layout()
-plt.show()
+plt.savefig('p01_tiempo_vs_natom.pdf')
 ```
 
-## Ejercicios
+## Interpretación química
 
-```{admonition} Ejercicio 1: Nueva molécula
-:class: note
-Elige una molécula de tu interés (fármaco, producto natural, etc.) y ejecútala en el flujo completo. Compara sus parámetros estructurales con valores de la literatura.
+La comparación de la geometría semilla con el cristal de cafeína permite evaluar directamente la calidad del protocolo ETKDG + MMFF94 + GFN2-xTB. Los valores calculados de C=O y C–N deberían estar dentro del 1–2 % de los valores cristalográficos, confirmando que GFN2-xTB es adecuado como punto de partida para DFT.
+
+En el bosque, las moléculas de la clase "casos difíciles" deberían mostrar la mayor tasa de fallo en la incrustación, porque ETKDG fue parametrizado con distribuciones de la CSD, donde las geometrías muy tensionadas están estadísticamente subrepresentadas.
+
+El análisis de correlaciones debería revelar que el tiempo de optimización xTB escala aproximadamente como $O(N^{2.5\text{–}3})$ con el número de átomos, teniendo implicaciones directas para diseño de pipelines masivos.
+
+```{admonition} Conexión con prácticas posteriores
+**La geometría `cafeina_GFN2.xyz` es el input directo de la Práctica 4** (optimización B3LYP/6-31G(d)). Guárdala. El bosque de esta práctica es la base del análisis de espacio conformacional de la Práctica 3.
 ```
 
-```{admonition} Ejercicio 2: Fallas de incrustación
-:class: note
-Encuentra una molécula que falle al incrustarse. ¿Qué características estructurales la hacen difícil? ¿Cómo lo solucionarías?
-```
+## Entregables
 
-```{admonition} Ejercicio 3: Comparación de campos de fuerza
-:class: note
-Compara los resultados de MMFF94 y UFF para la misma molécula. ¿Cuál produce mejor geometría para tu clase de moléculas?
-```
+### Datos
 
-## Resumen
+- **D1**: `cafeina_GFN2.xyz` — geometría semilla optimizada.
+- **D2**: `p01_dataset_final.csv` — bosque con la fila de la semilla añadida.
+- **D3**: `cafeina_xtb.out` — log de xTB sin modificar.
 
-En esta práctica aprendiste:
+### Figuras
 
-1. **Representaciones moleculares**: Las diferencias entre representaciones 0D, 1D, 2D y 3D
-2. **Incrustación 3D**: Cómo ETKDG genera coordenadas 3D iniciales a partir de SMILES
-3. **Optimización por campo de fuerza**: Pre-optimización con MMFF94 para obtener geometrías iniciales razonables
-4. **Métodos semiempíricos**: GFN2-xTB ofrece calidad cercana a DFT con bajo costo computacional
-5. **Automatización del flujo**: Construir flujos reproducibles para procesar múltiples moléculas
+- **F1**: `p01_tiempo_vs_natom.pdf` — dispersión tiempo vs átomos.
+- **F2**: `p01_energia_por_clase.pdf` — boxplot de energía por clase.
+- **F3**: `p01_correlaciones.pdf` — mapa de calor de correlaciones.
 
-```{admonition} Pasos siguientes
-:class: tip
-En la Práctica 2 usaremos estas geometrías optimizadas como puntos de partida para el muestreo conformacional y explorar el espacio conformacional de moléculas flexibles.
-```
+### Texto
+
+- **T1**: Reporte (≤ 2 páginas): tabla de validación geométrica vs cristal, figuras comentadas.
+- **T2**: Respuestas a las preguntas de discusión (≤ 150 palabras por pregunta).
+
+## Preguntas de discusión
+
+1. **(Comprensión)** El SMILES de la cafeína es `Cn1cnc2c1c(=O)n(c(=O)n2C)C`. Escribe el SMILES de la teobromina (7-metilxantina) y la teofilina (1,3-dimetilxantina). ¿Qué diferencia estructural codifica cada SMILES respecto al de la cafeína?
+
+2. **(Comprensión)** ¿Qué significan `--chrg 0` y `--uhf 0` en el comando xTB? ¿Qué ocurriría química y numéricamente si ejecutaras el cálculo con `--uhf 2`?
+
+3. **(Análisis)** Examina el log de xTB e identifica: (a) el número de ciclos de optimización, (b) la energía en el primer y en el último ciclo, y (c) el cambio geométrico entre MMFF94 y GFN2-xTB. ¿Fue útil la pre-optimización?
+
+4. **(Análisis)** Del bosque, identifica las tres moléculas con mayor RMSD de planaridad de anillo y las tres con menor. ¿Qué factor estructural parece determinante?
+
+5. **(Metodológico)** ¿Por qué es importante fijar `randomSeed = 42`? ¿Qué consecuencia tendría para la reproducibilidad si cada estudiante usara una semilla diferente?
+
+6. **(Metodológico)** GFN2-xTB es un método semiempírico. ¿En qué práctica del Bloque 2 aprenderás la diferencia entre métodos semiempíricos y de primeros principios? ¿Qué limitaciones específicas de GFN2-xTB esperas?
+
+## Extensiones del ejercicio
+
+- **Familia de xantinas**: repetir el pipeline para teobromina, teofilina, paraxantina y adenina. Construir un dataset de los 20 derivados más simples.
+
+- **Recuperar fallos**: para moléculas donde `embed_ok = False`, intentar recuperar usando `AllChem.EmbedMultipleConfs` con 100 conformaciones.
+
+- **Fragmento de ChEMBL**: descargar 1000 SMILES de ChEMBL con MW < 300 Da y ejecutar el pipeline. Analizar tasa de éxito.
+
+- **GFN1 vs GFN2**: repetir la optimización semilla con `--gfn 1`. Comparar geometrías y tiempos.
+
+- **Puerta a DFT**: usar `cafeina_GFN2.xyz` como input de la Práctica 4 (B3LYP/6-31G(d)) y cuantificar cambios geométricos.
 
 ## Referencias
 
-1. Landrum, G. *RDKit: Quimioinformática de código abierto*. https://www.rdkit.org/
-2. Bannwarth, C. et al. *GFN2-xTB—Un método de enlace fuerte autoconsistente ampliamente parametrizado*. J. Chem. Theory Comput. 2019, 15, 1652–1671.
-3. Riniker, S.; Landrum, G.A. *Geometría de distancias mejor informada*. J. Chem. Inf. Model. 2015, 55, 2562–2574.
+1. Landrum, G. *RDKit: Open-Source Cheminformatics*. https://www.rdkit.org/
+
+2. Bannwarth, C.; Ehlert, S.; Grimme, S. *GFN2-xTB — An Accurate and Broadly Parametrized Self-Consistent Tight-Binding Quantum Chemical Method*. J. Chem. Theory Comput. **15**(3), 1652–1671, 2019.
+
+3. Riniker, S.; Landrum, G.A. *Better Informed Distance Geometry: Using What We Know To Improve Conformation Generation*. J. Chem. Inf. Model. **55**(12), 2562–2574, 2015.
