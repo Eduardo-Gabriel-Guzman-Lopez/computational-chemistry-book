@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Manual de prácticas para química computacional. Del orbital al espacio químico &#8212; Manual de prácticas para química computacional. Del orbital al espacio químico</title>
+    <title>Del orbital al espacio químico &#8212; Del orbital al espacio químico</title>
   
   
   
@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e263a399" />
@@ -42,16 +42,50 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=78d55cf8"></script>
+    <script src="_static/documentation_options.js?v=c2101671"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/copybutton.js?v=0d92f62f"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Haz clic para mostrar';</script>
     <script>let toggleHintHide = 'Haz clic para ocultar';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js?v=1ae7504c"></script>
+    <script kind="utterances">
+
+    var commentsRunWhenDOMLoaded = cb => {
+    if (document.readyState != 'loading') {
+        cb()
+    } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', cb)
+    } else {
+        document.attachEvent('onreadystatechange', function() {
+        if (document.readyState == 'complete') cb()
+        })
+    }
+}
+
+var addUtterances = () => {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://utteranc.es/client.js";
+    script.async = "async";
+
+    script.setAttribute("repo", "Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book");
+    script.setAttribute("issue-term", "pathname");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("label", "💬 comment");
+    script.setAttribute("crossorigin", "anonymous");
+
+    sections = document.querySelectorAll("div.section");
+    if (sections !== null) {
+        section = sections[sections.length-1];
+        section.appendChild(script);
+    }
+}
+commentsRunWhenDOMLoaded(addUtterances);
+</script>
     <script src="_static/translations.js?v=d190bf04"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -64,7 +98,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'intro';</script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="Estructura y flujos de trabajo" href="part1-foundations/overview.html" />
+    <link rel="next" title="Práctica 1 · De SMILES a coordenadas 3D" href="notebooks/p01.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="es"/>
   </head>
@@ -103,8 +137,8 @@
          class="form-control"
          name="q"
          id="search-input"
-         placeholder="Search this book..."
-         aria-label="Search this book..."
+         placeholder="Search..."
+         aria-label="Search..."
          autocomplete="off"
          autocorrect="off"
          autocapitalize="off"
@@ -154,7 +188,7 @@
   
   
   
-    <p class="title logo__title">Manual de prácticas para química computacional. Del orbital al espacio químico</p>
+    <p class="title logo__title">Del orbital al espacio químico</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -170,36 +204,10 @@
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        
-        <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1 current active">
-                <a class="reference internal" href="#">
-                    Manual de prácticas para química computacional. Del orbital al espacio químico
-                </a>
-            </li>
-        </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introducción</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contenido actual</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="part1-foundations/overview.html">Estructura y flujos de trabajo</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte I: Fundamentos de química cuántica</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="part1-foundations/p01-first-steps.html">Práctica 1: Primeros pasos</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="part1-foundations/p01-cafeina-completo.html">   📓 Notebook ejecutable (Jupyter)</a></li>
-</ul>
-</details></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte II: Reactividad química</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="part2-reactivity/p19-reaction-analysis.html">Práctica 19: Análisis de energías de reacción</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte III: Mecanismos de reacción</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="part3-mechanisms/p33-transition-states.html">Práctica 33: Análisis de estados de transición</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte IV: IA en quimioinformática</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="part4-ai-cheminformatics/p47-molecular-libraries.html">Práctica 47: Generación de bibliotecas moleculares con RDKit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/p01.html">Práctica 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/p02.html">Práctica 2</a></li>
 </ul>
 
     </div>
@@ -265,23 +273,6 @@
   <i class="fab fa-github"></i>
   </span>
 <span class="btn__text-container">Repository</span>
-</a>
-</li>
-      
-      
-      
-      
-      <li><a href="https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/edit/main/./intro.md" target="_blank"
-   class="btn btn-sm btn-source-edit-button dropdown-item"
-   title="Suggest edit"
-   data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-pencil-alt"></i>
-  </span>
-<span class="btn__text-container">Suggest edit</span>
 </a>
 </li>
       
@@ -402,7 +393,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Manual de prácticas para química computacional. Del orbital al espacio químico</h1>
+    <h1>Del orbital al espacio químico</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -412,11 +403,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sobre-este-libro">Sobre este libro</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#soporte-de-software">Soporte de software</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funcionalidades-interactivas">Funcionalidades interactivas</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#organizacion">Organización</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#para-empezar">Para empezar</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#como-usar-este-libro">¿Cómo usar este libro?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#software">Software</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ejecutar-en-la-nube">Ejecutar en la nube</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estructura-del-manual">Estructura del manual</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citar-este-recurso">Citar este recurso</a></li>
 </ul>
             </nav>
@@ -429,70 +419,94 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <img src="assets/images/cover.png" alt="Portada" style="display:block;margin:auto;max-width:60%;height:auto;">
-<section class="tex2jax_ignore mathjax_ignore" id="manual-de-practicas-para-quimica-computacional-del-orbital-al-espacio-quimico">
-<h1>Manual de prácticas para química computacional. Del orbital al espacio químico<a class="headerlink" href="#manual-de-practicas-para-quimica-computacional-del-orbital-al-espacio-quimico" title="Link to this heading">#</a></h1>
-<p>Este libro interactivo ofrece una introducción práctica y completa a las técnicas de química computacional, desde cálculos cuánticos fundamentales hasta el diseño molecular moderno impulsado por inteligencia artificial.</p>
-<section id="sobre-este-libro">
-<h2>Sobre este libro<a class="headerlink" href="#sobre-este-libro" title="Link to this heading">#</a></h2>
-<p>El texto está pensado como un manual de laboratorio para estudiantes e investigadores de química computacional. Cada capítulo incluye:</p>
+  <img alt="Portada" src="_images/cover.png" />
+<section class="tex2jax_ignore mathjax_ignore" id="del-orbital-al-espacio-quimico">
+<h1>Del orbital al espacio químico<a class="headerlink" href="#del-orbital-al-espacio-quimico" title="Link to this heading">#</a></h1>
+<p><strong>Manual de prácticas de química computacional</strong><br />
+Eduardo Gabriel Guzmán-López · Miguel Reina<br />
+UNAM · Facultad de Química · Grupo Dra. Annia Galano</p>
+<hr class="docutils" />
+<p>Este manual cubre 55 prácticas organizadas en 20 bloques temáticos,
+desde la generación de estructuras moleculares hasta el diseño de
+fármacos asistido por inteligencia artificial.</p>
+<section id="como-usar-este-libro">
+<h2>¿Cómo usar este libro?<a class="headerlink" href="#como-usar-este-libro" title="Link to this heading">#</a></h2>
+<p>Cada práctica tiene dos partes:</p>
 <ul class="simple">
-<li><p><strong>Marco teórico</strong>: Conceptos esenciales explicados con claridad</p></li>
-<li><p><strong>Tutoriales paso a paso</strong>: Instrucciones detalladas para los cálculos</p></li>
-<li><p><strong>Código interactivo</strong>: celdas de Python que puedes ejecutar directamente en el navegador</p></li>
-<li><p><strong>Soporte dual de software</strong>: ejemplos tanto para los paquetes Gaussian como ORCA</p></li>
+<li><p><strong>🌱 Semilla</strong> — un cálculo ejecutable que puedes correr ahora mismo,
+ya sea en tu servidor institucional o directamente en Google Colab.</p></li>
+<li><p><strong>🌳 Bosque</strong> — un dataset pre-calculado de decenas a cientos de
+moléculas para análisis estadístico y visualización.</p></li>
 </ul>
 </section>
-<section id="soporte-de-software">
-<h2>Soporte de software<a class="headerlink" href="#soporte-de-software" title="Link to this heading">#</a></h2>
-<p>A lo largo del libro presentamos ejemplos usando dos paquetes principales de química cuántica:</p>
+<section id="software">
+<h2>Software<a class="headerlink" href="#software" title="Link to this heading">#</a></h2>
+<p>Las prácticas de estructura electrónica (Bloques 1–16) funcionan con
+<strong>ORCA 5</strong> (gratuito para uso académico) o con <strong>Gaussian 16</strong>.
+Usa las pestañas en cada práctica para seleccionar tu software:</p>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-0">
-Gaussian</label><div class="sd-tab-content docutils">
-<p>Gaussian es un paquete comercial ampliamente usado en química cuántica. Las pestañas de Gaussian muestran los archivos de entrada y los resultados esperados para este software.</p>
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="orca" for="sd-tab-item-0">
+ORCA 5</label><div class="sd-tab-content docutils">
+<p>Selecciona esta pestaña para ver los inputs de ORCA en todas las prácticas.</p>
 </div>
 <input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-1">
-ORCA</label><div class="sd-tab-content docutils">
-<p>ORCA es un paquete gratuito para uso académico, potente y versátil. Las pestañas de ORCA ofrecen cálculos equivalentes que se pueden ejecutar sin licencias comerciales.</p>
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="g16" for="sd-tab-item-1">
+Gaussian 16</label><div class="sd-tab-content docutils">
+<p>Selecciona esta pestaña para ver los inputs de Gaussian 16.</p>
 </div>
 </div>
+<p>Los Bloques 17–20 (quimioinformática e IA) usan exclusivamente
+herramientas de código abierto: RDKit, scikit-learn, PyTorch y PyG.</p>
 </section>
-<section id="funcionalidades-interactivas">
-<h2>Funcionalidades interactivas<a class="headerlink" href="#funcionalidades-interactivas" title="Link to this heading">#</a></h2>
-<p>El libro ofrece varias maneras de interactuar con el código:</p>
-<ol class="arabic simple">
-<li><p><strong>Thebe</strong>: haz clic en el icono de cohete (🚀) en la parte superior de cualquier página para habilitar la ejecución en vivo</p></li>
-<li><p><strong>Binder</strong>: lanza un entorno JupyterLab completo con todas las dependencias preinstaladas</p></li>
-<li><p><strong>Google Colab</strong>: abre los notebooks en Google Colab para ejecución en la nube</p></li>
-</ol>
-<div class="admonition note">
-<p class="admonition-title">Nota</p>
-<p>Las celdas de código Python (RDKit, pandas, matplotlib) pueden ejecutarse interactivamente. Los archivos de entrada para Gaussian y ORCA se proporcionan como referencia; necesitarás acceso a esos programas para ejecutar los cálculos cuánticos.</p>
+<section id="ejecutar-en-la-nube">
+<h2>Ejecutar en la nube<a class="headerlink" href="#ejecutar-en-la-nube" title="Link to this heading">#</a></h2>
+<p>Cada práctica incluye un botón para abrirla directamente en Google Colab:</p>
+<p><a class="reference external" href="https://colab.research.google.com/github/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/blob/main/notebooks/p01.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+</section>
+<section id="estructura-del-manual">
+<h2>Estructura del manual<a class="headerlink" href="#estructura-del-manual" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Parte</p></th>
+<th class="head text-center"><p>Bloques</p></th>
+<th class="head text-center"><p>Prácticas</p></th>
+<th class="head text-left"><p>Tema</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>I</p></td>
+<td class="text-center"><p>1–6</p></td>
+<td class="text-center"><p>P01–P18</p></td>
+<td class="text-left"><p>Fundamentos y estructura electrónica</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>II</p></td>
+<td class="text-center"><p>7–10</p></td>
+<td class="text-center"><p>P19–P30</p></td>
+<td class="text-left"><p>Análisis de propiedades y reactividad</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>III</p></td>
+<td class="text-center"><p>11–16</p></td>
+<td class="text-center"><p>P31–P46</p></td>
+<td class="text-left"><p>Mecanismos y sistemas complejos</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>IV</p></td>
+<td class="text-center"><p>17–20</p></td>
+<td class="text-center"><p>P47–P55</p></td>
+<td class="text-left"><p>Espacio químico e inteligencia artificial</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-</section>
-<section id="organizacion">
-<h2>Organización<a class="headerlink" href="#organizacion" title="Link to this heading">#</a></h2>
-<p>El libro está estructurado en cuatro partes principales:</p>
-<ol class="arabic simple">
-<li><p><strong>Parte I: Fundamentos de química cuántica</strong> – conceptos básicos, optimización geométrica y cálculos de estructura electrónica</p></li>
-<li><p><strong>Parte II: Reactividad química</strong> – análisis de energías, termoquímica y energías de reacción</p></li>
-<li><p><strong>Parte III: Mecanismos de reacción</strong> – estados de transición, trayectorias y cinética</p></li>
-<li><p><strong>Parte IV: IA en quimioinformática</strong> – aprendizaje automático, representaciones moleculares y diseño asistido por IA</p></li>
-</ol>
-</section>
-<section id="para-empezar">
-<h2>Para empezar<a class="headerlink" href="#para-empezar" title="Link to this heading">#</a></h2>
-<p>Si eres nuevo en química computacional, te recomendamos comenzar con la Práctica 1 para familiarizarte con el flujo de trabajo básico. Cada práctica construye sobre la anterior, así que seguir el orden es útil para principiantes.</p>
-<p>Para quienes ya tienen experiencia, pueden navegar directamente a los temas que les interesen.</p>
+<hr class="docutils" />
 <div class="tip admonition">
-<p class="admonition-title">Prerrequisitos</p>
-<ul class="simple">
-<li><p>Conocimientos básicos de química orgánica</p></li>
-<li><p>Familiaridad con programación en Python (para la Parte IV)</p></li>
-<li><p>Acceso a Gaussian u ORCA (para cálculos cuánticos)</p></li>
-</ul>
+<p class="admonition-title">Primera vez aquí</p>
+<p>Empieza por la Práctica 1.</p>
+<!-- Cuando existan estos archivos, reactivar enlaces internos:
+Empieza por el {doc}`prefacio` para entender la filosofía del manual,
+y luego revisa el {doc}`anexos/anexo_a` para configurar tu entorno
+de cómputo antes de la Práctica 1.
+-->
 </div>
 </section>
 <section id="citar-este-recurso">
@@ -501,17 +515,8 @@ ORCA</label><div class="sd-tab-content docutils">
 <blockquote>
 <div><p>Guzmán-López, E. <em>Química Computacional: de la Mecánica Cuántica al Diseño Asistido por IA</em>. 2026.</p>
 </div></blockquote>
-<hr class="docutils" />
-<p>¡Comencemos tu viaje por la química computacional! 🧪</p>
 </section>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
+<hr class="docutils" />
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -547,11 +552,11 @@ ORCA</label><div class="sd-tab-content docutils">
                   
 <div class="prev-next-area">
     <a class="right-next"
-       href="part1-foundations/overview.html"
+       href="notebooks/p01.html"
        title="siguiente página">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">siguiente</p>
-        <p class="prev-next-title">Estructura y flujos de trabajo</p>
+        <p class="prev-next-title">Práctica 1 · De SMILES a coordenadas 3D</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -571,11 +576,10 @@ ORCA</label><div class="sd-tab-content docutils">
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sobre-este-libro">Sobre este libro</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#soporte-de-software">Soporte de software</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funcionalidades-interactivas">Funcionalidades interactivas</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#organizacion">Organización</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#para-empezar">Para empezar</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#como-usar-este-libro">¿Cómo usar este libro?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#software">Software</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ejecutar-en-la-nube">Ejecutar en la nube</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estructura-del-manual">Estructura del manual</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citar-este-recurso">Citar este recurso</a></li>
 </ul>
   </nav></div>
@@ -591,7 +595,7 @@ ORCA</label><div class="sd-tab-content docutils">
   <div class="footer-item">
     
 <p class="component-author">
-Por Azriel Belgrado
+Por Eduardo Gabriel Guzmán-López y Miguel Reina
 </p>
 
   </div>
@@ -601,7 +605,7 @@ Por Azriel Belgrado
 
   <p class="copyright">
     
-      © Copyright 2026.
+      © Copyright 2025, UNAM · Facultad de Química.
       <br/>
     
   </p>

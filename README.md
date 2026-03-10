@@ -4,7 +4,7 @@
 > Eduardo Gabriel Guzmán-López · Miguel Reina  
 > UNAM · Facultad de Química · Grupo Dra. Annia Galano
 
-[![Deploy](https://github.com/qcmanual/del-orbital-al-espacio-quimico/actions/workflows/deploy.yml/badge.svg)](https://github.com/qcmanual/del-orbital-al-espacio-quimico/actions/workflows/deploy.yml)
+[![Deploy](https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/actions/workflows/deploy-book.yml/badge.svg)](https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/actions/workflows/deploy-book.yml)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 **Libro en línea:** https://eduardo-gabriel-guzman-lopez.github.io/computational-chemistry-book/intro.html
@@ -75,8 +75,8 @@ El deploy tarda ~3 minutos. Puedes ver el progreso en la pestaña
 ### 1. Clonar e instalar dependencias
 
 ```bash
-git clone https://github.com/qcmanual/del-orbital-al-espacio-quimico.git
-cd del-orbital-al-espacio-quimico
+git clone https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book.git
+cd computational-chemistry-book
 conda env create -f environment.yml
 conda activate qcmanual-book
 ```
@@ -151,7 +151,7 @@ El código (scripts y notebooks) está bajo licencia MIT.
   author    = {Guzm{\'a}n-L{\'o}pez, Eduardo Gabriel and Reina, Miguel},
   year      = {2025},
   publisher = {UNAM · Facultad de Qu{\'i}mica},
-  url       = {https://qcmanual.github.io/del-orbital-al-espacio-quimico}
+  url       = {https://eduardo-gabriel-guzman-lopez.github.io/computational-chemistry-book/intro.html}
 }
 ```
 

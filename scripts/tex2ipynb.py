@@ -10,11 +10,13 @@ CONVENCIÓN ORCA/G16 en el .tex:
 → genera tab-set MyST sincronizado
 
 Uso:
-  python tex2ipynb.py P01.tex -o p01.ipynb
-  python tex2ipynb.py --all tex/ notebooks/
+    python scripts/tex2ipynb.py tex/practica-01.tex -o notebooks/p01.ipynb
+    python scripts/tex2ipynb.py --all tex/ notebooks/
 """
-import re, json, sys
+import re, json, sys, uuid, yaml
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 # ── LIMPIEZA LATEX → MARKDOWN ─────────────────────────────────
 def limpiar(t):
@@ -31,7 +33,7 @@ def limpiar(t):
     t = re.sub(r'\\doi\{([^}]+)\}', r'[DOI:\1](https://doi.org/\1)', t)
     t = re.sub(r'\\url\{([^}]+)\}', r'[\1](\1)', t)
     t = re.sub(r'\\href\{([^}]+)\}\{([^}]+)\}', r'[\2](\1)', t)
-    t = re.sub(r'\\cite\{([^}]+)\}', r'^[\1]^', t)
+    t = re.sub(r'\\cite\{([^}]+)\}', r'{cite}`\1`', t)
     t = re.sub(r'\\(?:ref|label)\{[^}]+\}', '', t)
     t = t.replace("``", '"').replace("''", '"').replace("`", "'")
     t = re.sub(r'---', '—', t); t = re.sub(r'--', '–', t)
@@ -228,22 +230,33 @@ def meta(texto):
     return titulo, num, bloque
 
 def construir(celdas, titulo, num, bloque):
+    def make_id(prefix):
+        return f'{prefix}{uuid.uuid4().hex[:12]}'
+
     def md(src):
-        return {'cell_type':'markdown','id':f'md{abs(hash(src[:20])):09x}',
+        return {'cell_type':'markdown','id':make_id('md'),
                 'metadata':{},'source':src}
     def code(src, lang='python'):
         return {'cell_type':'code','execution_count':None,
-                'id':f'co{abs(hash(src[:20])):09x}',
+                'id':make_id('co'),
                 'metadata':{'tags':['bash'] if lang=='bash' else []},
                 'outputs':[],'source':src}
     badge = (f'[![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)]'
-             f'(https://colab.research.google.com/github/qcmanual/'
-             f'del-orbital-al-espacio-quimico/blob/main/notebooks/p{num:02d}.ipynb)')
+             f'(https://colab.research.google.com/github/Eduardo-Gabriel-Guzman-Lopez/'
+             f'computational-chemistry-book/blob/main/notebooks/p{num:02d}.ipynb)')
     header = f'# Práctica {num}: {titulo}\n\n> **{bloque}** · Manual de QC · UNAM\n\n{badge}'
     cells  = [md(header), code(SETUP)]
     for c in celdas:
         cells.append(md(c['source']) if c['type']=='markdown'
                      else code(c['source'], c.get('lang','python')))
+
+    has_citations = any(
+        cell.get('cell_type') == 'markdown' and '{cite}`' in str(cell.get('source', ''))
+        for cell in cells
+    )
+    if has_citations:
+        cells.append(md('```{bibliography}\n:filter: cited\n```'))
+
     return {
         'nbformat':4,'nbformat_minor':5,
         'metadata':{'kernelspec':{'display_name':'Python 3 (qcmanual)',
@@ -257,10 +270,14 @@ def construir(celdas, titulo, num, bloque):
 # ── API ────────────────────────────────────────────────────────
 def convertir(ruta_tex, ruta_ipynb=None, verbose=True):
     ruta_tex = Path(ruta_tex)
+    if not ruta_tex.is_absolute():
+        ruta_tex = (REPO_ROOT / ruta_tex).resolve()
     if not ruta_ipynb:
         stem = ruta_tex.stem.lower().replace('practica-','p')
         ruta_ipynb = ruta_tex.parent / f'{stem}.ipynb'
     ruta_ipynb = Path(ruta_ipynb)
+    if not ruta_ipynb.is_absolute():
+        ruta_ipynb = (REPO_ROOT / ruta_ipynb).resolve()
     ruta_ipynb.parent.mkdir(parents=True, exist_ok=True)
     texto = ruta_tex.read_text(encoding='utf-8')
     titulo, num, bloque = meta(texto)
@@ -272,15 +289,66 @@ def convertir(ruta_tex, ruta_ipynb=None, verbose=True):
         nc = sum(1 for c in celdas if c['type']=='code')
         nm = sum(1 for c in celdas if c['type']=='markdown')
         print(f'✓ P{num:02d} | {nc} código · {nm} markdown → {ruta_ipynb}')
+
+    sincronizar_toc_practica(num)
+
     return ruta_ipynb
 
+def sincronizar_toc_practica(num):
+    toc_path = REPO_ROOT / '_toc.yml'
+    if not toc_path.exists() or num <= 0:
+        return
+
+    try:
+        data = yaml.safe_load(toc_path.read_text(encoding='utf-8')) or {}
+    except Exception:
+        return
+
+    parts = data.setdefault('parts', [])
+    if not isinstance(parts, list):
+        return
+
+    part_objetivo = None
+    for part in parts:
+        if isinstance(part, dict) and part.get('caption') == 'Contenido actual':
+            part_objetivo = part
+            break
+
+    if part_objetivo is None:
+        part_objetivo = {'caption': 'Contenido actual', 'chapters': []}
+        parts.append(part_objetivo)
+
+    chapters = part_objetivo.setdefault('chapters', [])
+    if not isinstance(chapters, list):
+        return
+
+    file_ref = f'notebooks/p{num:02d}'
+    ya_existe = any(isinstance(ch, dict) and ch.get('file') == file_ref for ch in chapters)
+    if ya_existe:
+        return
+
+    chapters.append({'file': file_ref, 'title': f'Práctica {num}'})
+
+    toc_path.write_text(
+        yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+        encoding='utf-8'
+    )
+    print(f'ℹ _toc.yml actualizado: agregado {file_ref}')
+
 def convertir_todos(dir_tex='.', dir_out='notebooks'):
-    archivos = sorted(Path(dir_tex).glob('practica-*.tex'))
-    if not archivos: archivos = sorted(Path(dir_tex).glob('P*.tex'))
+    dir_tex_path = Path(dir_tex)
+    if not dir_tex_path.is_absolute():
+        dir_tex_path = (REPO_ROOT / dir_tex_path).resolve()
+    dir_out_path = Path(dir_out)
+    if not dir_out_path.is_absolute():
+        dir_out_path = (REPO_ROOT / dir_out_path).resolve()
+
+    archivos = sorted(dir_tex_path.glob('practica-*.tex'))
+    if not archivos: archivos = sorted(dir_tex_path.glob('P*.tex'))
     print(f'Convirtiendo {len(archivos)} archivos...\n')
     for tex in archivos:
         num = re.search(r'\d+', tex.stem)
-        out = Path(dir_out) / f'p{int(num.group()):02d}.ipynb'
+        out = dir_out_path / f'p{int(num.group()):02d}.ipynb'
         try: convertir(tex, out)
         except Exception as e: print(f'✗ {tex.name}: {e}')
 

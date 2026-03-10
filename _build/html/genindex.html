@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Índice &#8212; Manual de prácticas para química computacional. Del orbital al espacio químico</title>
+    <title>Índice &#8212; Del orbital al espacio químico</title>
   
   
   
@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e263a399" />
@@ -41,16 +41,50 @@
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=78d55cf8"></script>
+    <script src="_static/documentation_options.js?v=c2101671"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/copybutton.js?v=0d92f62f"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Haz clic para mostrar';</script>
     <script>let toggleHintHide = 'Haz clic para ocultar';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js?v=1ae7504c"></script>
+    <script kind="utterances">
+
+    var commentsRunWhenDOMLoaded = cb => {
+    if (document.readyState != 'loading') {
+        cb()
+    } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', cb)
+    } else {
+        document.attachEvent('onreadystatechange', function() {
+        if (document.readyState == 'complete') cb()
+        })
+    }
+}
+
+var addUtterances = () => {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://utteranc.es/client.js";
+    script.async = "async";
+
+    script.setAttribute("repo", "Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book");
+    script.setAttribute("issue-term", "pathname");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("label", "💬 comment");
+    script.setAttribute("crossorigin", "anonymous");
+
+    sections = document.querySelectorAll("div.section");
+    if (sections !== null) {
+        section = sections[sections.length-1];
+        section.appendChild(script);
+    }
+}
+commentsRunWhenDOMLoaded(addUtterances);
+</script>
     <script src="_static/translations.js?v=d190bf04"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -535,8 +569,8 @@ window.runMermaid = runMermaid;</script>
          class="form-control"
          name="q"
          id="search-input"
-         placeholder="Search this book..."
-         aria-label="Search this book..."
+         placeholder="Search..."
+         aria-label="Search..."
          autocomplete="off"
          autocorrect="off"
          autocapitalize="off"
@@ -586,7 +620,7 @@ window.runMermaid = runMermaid;</script>
   
   
   
-    <p class="title logo__title">Manual de prácticas para química computacional. Del orbital al espacio químico</p>
+    <p class="title logo__title">Del orbital al espacio químico</p>
   
 </a></div>
         <div class="sidebar-primary-item">
@@ -602,36 +636,10 @@ window.runMermaid = runMermaid;</script>
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        
-        <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1">
-                <a class="reference internal" href="intro.html">
-                    Manual de prácticas para química computacional. Del orbital al espacio químico
-                </a>
-            </li>
-        </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introducción</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contenido actual</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="part1-foundations/overview.html">Estructura y flujos de trabajo</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte I: Fundamentos de química cuántica</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="part1-foundations/p01-first-steps.html">Práctica 1: Primeros pasos</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="part1-foundations/p01-cafeina-completo.html">   📓 Notebook ejecutable (Jupyter)</a></li>
-</ul>
-</details></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte II: Reactividad química</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="part2-reactivity/p19-reaction-analysis.html">Práctica 19: Análisis de energías de reacción</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte III: Mecanismos de reacción</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="part3-mechanisms/p33-transition-states.html">Práctica 33: Análisis de estados de transición</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte IV: IA en quimioinformática</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="part4-ai-cheminformatics/p47-molecular-libraries.html">Práctica 47: Generación de bibliotecas moleculares con RDKit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/p01.html">Práctica 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/p02.html">Práctica 2</a></li>
 </ul>
 
     </div>
@@ -815,7 +823,7 @@ document.write(`
   <div class="footer-item">
     
 <p class="component-author">
-Por Azriel Belgrado
+Por Eduardo Gabriel Guzmán-López y Miguel Reina
 </p>
 
   </div>
@@ -825,7 +833,7 @@ Por Azriel Belgrado
 
   <p class="copyright">
     
-      © Copyright 2026.
+      © Copyright 2025, UNAM · Facultad de Química.
       <br/>
     
   </p>

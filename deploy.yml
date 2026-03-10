@@ -6,8 +6,8 @@
 # El flujo completo es:
 #   1. tex2ipynb.py convierte todos los .tex → .ipynb
 #   2. jupyter-book build genera el HTML estático
-#   3. gh-pages publica en https://qcmanual.github.io/
-#                           del-orbital-al-espacio-quimico
+#   3. gh-pages publica en:
+#      https://eduardo-gabriel-guzman-lopez.github.io/computational-chemistry-book/
 # ══════════════════════════════════════════════════════════════
 
 name: Build & Deploy Jupyter Book

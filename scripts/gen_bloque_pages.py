@@ -13,6 +13,8 @@ Se ejecuta durante el GitHub Action, antes del build.
 import re, yaml
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
 # Descripciones cortas de cada bloque
 # (editar aquí si cambia el contenido del manual)
 BLOQUES = {
@@ -129,6 +131,31 @@ def practicas_del_bloque(n):
     }
     return mapa.get(n, [])
 
+def bloques_en_toc():
+     toc_path = REPO_ROOT / '_toc.yml'
+     if not toc_path.exists():
+          return []
+
+     data = yaml.safe_load(toc_path.read_text(encoding='utf-8')) or {}
+     found = set()
+
+     def walk(node):
+          if isinstance(node, dict):
+               file_ref = node.get('file')
+               if isinstance(file_ref, str):
+                    m = re.search(r'notebooks/bloque(\d{2})$', file_ref)
+                    if m:
+                         found.add(int(m.group(1)))
+               for key in ('parts', 'chapters', 'sections'):
+                    if key in node:
+                         walk(node[key])
+          elif isinstance(node, list):
+               for item in node:
+                    walk(item)
+
+     walk(data)
+     return sorted(found)
+
 def generar_pagina_bloque(n, titulo, descripcion):
     practicas = practicas_del_bloque(n)
     links_md = '\n'.join(
@@ -158,16 +185,29 @@ a un **bosque** de datos pre-calculado para análisis estadístico.
 """
 
 def main():
-    out_dir = Path('notebooks')
-    out_dir.mkdir(exist_ok=True)
+     out_dir = REPO_ROOT / 'notebooks'
+     out_dir.mkdir(exist_ok=True)
 
-    for n, (titulo, desc) in BLOQUES.items():
-        contenido = generar_pagina_bloque(n, titulo, desc)
-        ruta = out_dir / f'bloque{n:02d}.md'
-        ruta.write_text(contenido, encoding='utf-8')
-        print(f'✓  {ruta}')
+     bloques_objetivo = bloques_en_toc()
+     if not bloques_objetivo:
+          print('ℹ No hay bloques `notebooks/bloqueXX` en _toc.yml; no se generan páginas de bloque.')
+          return
 
-    print(f'\n{len(BLOQUES)} páginas de bloque generadas.')
+     generados = 0
+
+     for n in bloques_objetivo:
+          if n not in BLOQUES:
+               print(f'⚠ Bloque {n:02d} aparece en _toc.yml pero no está definido en BLOQUES.')
+               continue
+
+          titulo, desc = BLOQUES[n]
+          contenido = generar_pagina_bloque(n, titulo, desc)
+          ruta = out_dir / f'bloque{n:02d}.md'
+          ruta.write_text(contenido, encoding='utf-8')
+          print(f'✓  {ruta}')
+          generados += 1
+
+     print(f'\n{generados} páginas de bloque generadas (según _toc.yml).')
 
 if __name__ == '__main__':
     main()

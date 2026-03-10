@@ -36,7 +36,7 @@ html:
   home_page_in_navbar     : true
 #  favicon                 : "assets/favicon.ico"
 #  extra_navbar            : |
-#    <a href="https://github.com/qcmanual/del-orbital-al-espacio-quimico/releases/latest">
+#    <a href="https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/releases/latest">
 #    📄 Descargar PDF</a>
   extra_css:
     - _static/custom.css
@@ -74,13 +74,12 @@ parse:
     g16_version    : "Gaussian 16 Rev. C.02"
     xtb_version    : "xTB 6.6.1"
     rdkit_version  : "RDKit 2023.09"
-    repo_url       : "https://github.com/qcmanual/del-orbital-al-espacio-quimico"
-    colab_base     : "https://colab.research.google.com/github/qcmanual/del-orbital-al-espacio-quimico/blob/main/notebooks"
+    repo_url       : "https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book"
+    colab_base     : "https://colab.research.google.com/github/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/blob/main/notebooks"
 
 # ── Extensiones Sphinx adicionales ──
 sphinx:
   extra_extensions:
-    - sphinx_tabs.tabs          # pestañas ORCA / G16 (tab-set MyST)
     - sphinx_copybutton         # botón "copiar" en bloques de código
     - sphinx_togglebutton       # bloques colapsables (soluciones)
     - sphinx_design
@@ -101,11 +100,16 @@ sphinx:
     html_theme_options:
       show_toc_level            : 2
       navigation_with_keys      : true
-      repository_url            : "https://github.com/qcmanual/del-orbital-al-espacio-quimico"
+      repository_url            : "https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book"
       repository_branch         : main
       use_source_button         : false
       use_issues_button         : true
       use_repository_button     : true
+      launch_buttons:
+        notebook_interface      : "jupyterlab"
+        binderhub_url           : "https://mybinder.org"
+        colab_url               : "https://colab.research.google.com"
+        thebe                   : true
     # sphinx-copybutton: no copiar prompts de shell
     copybutton_prompt_text      : "$ |>>> |\\.\\.\\. |\\$ "
     copybutton_prompt_is_regexp : true

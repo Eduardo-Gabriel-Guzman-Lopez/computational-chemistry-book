@@ -1,66 +1,72 @@
 <img src="assets/images/cover.png" alt="Portada" style="display:block;margin:auto;max-width:60%;height:auto;">
 
-# Manual de prácticas para química computacional. Del orbital al espacio químico
+# Del orbital al espacio químico
 
-Este libro interactivo ofrece una introducción práctica y completa a las técnicas de química computacional, desde cálculos cuánticos fundamentales hasta el diseño molecular moderno impulsado por inteligencia artificial.
+**Manual de prácticas de química computacional**  
+Eduardo Gabriel Guzmán-López · Miguel Reina  
+UNAM · Facultad de Química · Grupo Dra. Annia Galano
 
-## Sobre este libro
+---
 
-El texto está pensado como un manual de laboratorio para estudiantes e investigadores de química computacional. Cada capítulo incluye:
+Este manual cubre 55 prácticas organizadas en 20 bloques temáticos,
+desde la generación de estructuras moleculares hasta el diseño de
+fármacos asistido por inteligencia artificial.
 
-- **Marco teórico**: Conceptos esenciales explicados con claridad
-- **Tutoriales paso a paso**: Instrucciones detalladas para los cálculos
-- **Código interactivo**: celdas de Python que puedes ejecutar directamente en el navegador
-- **Soporte dual de software**: ejemplos tanto para los paquetes Gaussian como ORCA
+## ¿Cómo usar este libro?
 
-## Soporte de software
+Cada práctica tiene dos partes:
 
-A lo largo del libro presentamos ejemplos usando dos paquetes principales de química cuántica:
+- **🌱 Semilla** — un cálculo ejecutable que puedes correr ahora mismo,
+  ya sea en tu servidor institucional o directamente en Google Colab.
+- **🌳 Bosque** — un dataset pre-calculado de decenas a cientos de
+  moléculas para análisis estadístico y visualización.
 
-::::{tab-set}
+## Software
 
-:::{tab-item} Gaussian
-Gaussian es un paquete comercial ampliamente usado en química cuántica. Las pestañas de Gaussian muestran los archivos de entrada y los resultados esperados para este software.
-:::
+Las prácticas de estructura electrónica (Bloques 1–16) funcionan con
+**ORCA 5** (gratuito para uso académico) o con **Gaussian 16**.
+Usa las pestañas en cada práctica para seleccionar tu software:
 
-:::{tab-item} ORCA
-ORCA es un paquete gratuito para uso académico, potente y versátil. Las pestañas de ORCA ofrecen cálculos equivalentes que se pueden ejecutar sin licencias comerciales.
-:::
-
-::::
-
-## Funcionalidades interactivas
-
-El libro ofrece varias maneras de interactuar con el código:
-
-1. **Thebe**: haz clic en el icono de cohete (🚀) en la parte superior de cualquier página para habilitar la ejecución en vivo
-2. **Binder**: lanza un entorno JupyterLab completo con todas las dependencias preinstaladas
-3. **Google Colab**: abre los notebooks en Google Colab para ejecución en la nube
-
-```{note}
-Las celdas de código Python (RDKit, pandas, matplotlib) pueden ejecutarse interactivamente. Los archivos de entrada para Gaussian y ORCA se proporcionan como referencia; necesitarás acceso a esos programas para ejecutar los cálculos cuánticos.
+````{tab-set}
+```{tab-item} ORCA 5
+:sync: orca
+Selecciona esta pestaña para ver los inputs de ORCA en todas las prácticas.
 ```
+```{tab-item} Gaussian 16
+:sync: g16
+Selecciona esta pestaña para ver los inputs de Gaussian 16.
+```
+````
 
-## Organización
+Los Bloques 17–20 (quimioinformática e IA) usan exclusivamente
+herramientas de código abierto: RDKit, scikit-learn, PyTorch y PyG.
 
-El libro está estructurado en cuatro partes principales:
+## Ejecutar en la nube
 
-1. **Parte I: Fundamentos de química cuántica** – conceptos básicos, optimización geométrica y cálculos de estructura electrónica
-2. **Parte II: Reactividad química** – análisis de energías, termoquímica y energías de reacción
-3. **Parte III: Mecanismos de reacción** – estados de transición, trayectorias y cinética
-4. **Parte IV: IA en quimioinformática** – aprendizaje automático, representaciones moleculares y diseño asistido por IA
+Cada práctica incluye un botón para abrirla directamente en Google Colab:
 
-## Para empezar
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/blob/main/notebooks/p01.ipynb)
 
-Si eres nuevo en química computacional, te recomendamos comenzar con la Práctica 1 para familiarizarte con el flujo de trabajo básico. Cada práctica construye sobre la anterior, así que seguir el orden es útil para principiantes.
+## Estructura del manual
 
-Para quienes ya tienen experiencia, pueden navegar directamente a los temas que les interesen.
+| Parte | Bloques | Prácticas | Tema |
+|:------|:-------:|:---------:|:-----|
+| I     | 1–6     | P01–P18   | Fundamentos y estructura electrónica |
+| II    | 7–10    | P19–P30   | Análisis de propiedades y reactividad |
+| III   | 11–16   | P31–P46   | Mecanismos y sistemas complejos |
+| IV    | 17–20   | P47–P55   | Espacio químico e inteligencia artificial |
 
-```{admonition} Prerrequisitos
+---
+
+```{admonition} Primera vez aquí
 :class: tip
-- Conocimientos básicos de química orgánica
-- Familiaridad con programación en Python (para la Parte IV)
-- Acceso a Gaussian u ORCA (para cálculos cuánticos)
+Empieza por la Práctica 1.
+
+<!-- Cuando existan estos archivos, reactivar enlaces internos:
+Empieza por el {doc}`prefacio` para entender la filosofía del manual,
+y luego revisa el {doc}`anexos/anexo_a` para configurar tu entorno
+de cómputo antes de la Práctica 1.
+-->
 ```
 
 ## Citar este recurso
@@ -70,5 +76,3 @@ Si encuentras útil esta obra para investigación o docencia, por favor cita:
 > Guzmán-López, E. *Química Computacional: de la Mecánica Cuántica al Diseño Asistido por IA*. 2026.
 
 ---
-
-¡Comencemos tu viaje por la química computacional! 🧪

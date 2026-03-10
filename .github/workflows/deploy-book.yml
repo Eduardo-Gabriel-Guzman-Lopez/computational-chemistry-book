@@ -57,10 +57,10 @@ jobs:
       # ── Siguiente etapa (descomentar cuando vuelvan las carpetas/fuentes) ──
       # - name: Convertir LaTeX a notebooks
       #   run: |
-      #     python tex2ipynb.py --all tex/ notebooks/
+      #     python scripts/tex2ipynb.py --all tex/ notebooks/
       #
       # - name: Generar páginas de bloque
-      #   run: python gen_bloque_pages.py
+      #   run: python scripts/gen_bloque_pages.py
 
       - name: Build book
         run: |

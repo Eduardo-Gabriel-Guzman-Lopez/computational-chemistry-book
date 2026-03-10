@@ -8,8 +8,10 @@ root: intro
 parts:
   - caption: Contenido actual
     chapters:
-      - file: p01
+      - file: notebooks/p01
         title: "Práctica 1"
+      - file: notebooks/p02
+        title: "Práctica 2"
 
 # ── Siguiente etapa (descomentando conforme existan archivos) ──
 #

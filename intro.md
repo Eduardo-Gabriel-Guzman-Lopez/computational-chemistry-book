@@ -45,7 +45,7 @@ herramientas de código abierto: RDKit, scikit-learn, PyTorch y PyG.
 
 Cada práctica incluye un botón para abrirla directamente en Google Colab:
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/qcmanual/del-orbital-al-espacio-quimico/blob/main/notebooks/p01.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/blob/main/notebooks/p01.ipynb)
 
 ## Estructura del manual
 
