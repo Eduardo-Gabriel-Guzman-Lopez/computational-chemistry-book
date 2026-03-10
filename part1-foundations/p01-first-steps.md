@@ -223,7 +223,7 @@ Basándome en las preguntas previas, espero que el anillo purínico sea plano (o
 
 ### Paso 1: Construir el grafo molecular
 
-```{code-cell} ipython3
+```python
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
 from rdkit.Chem import rdMolDescriptors

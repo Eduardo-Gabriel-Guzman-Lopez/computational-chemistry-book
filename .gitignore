@@ -58,3 +58,5 @@ venv/
 ############################
 
 data/tmp/
+_build/
+_jupyter_cache/

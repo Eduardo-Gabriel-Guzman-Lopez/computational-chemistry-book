@@ -46,7 +46,7 @@ El método semiemperico GFN2-xTB calcula la energía total con precisión sufici
 
 ### Paso 1: Definir el cabezal y los sustituyentes
 
-```{code-cell} ipython3
+```python
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw, Descriptors, Lipinski
 from rdkit.Chem import rdMolDescriptors
@@ -74,7 +74,7 @@ print(f"\nTotal combinations: {np.prod([len(v) for v in substituents.values()])}
 
 ### Paso 2: Enumerar derivados
 
-```{code-cell} ipython3
+```python
 def generate_derivatives(core_smiles, substituents_dict):
     """
     Generate molecular derivatives by combining substituents.
@@ -142,7 +142,7 @@ print(f"Generated {len(library)} valid derivatives")
 
 ### Paso 3: Calcular descriptores de Lipinski y Veber
 
-```{code-cell} ipython3
+```python
 def calculate_descriptors(smiles):
     """Calculate drug-likeness descriptors for a molecule."""
     mol = Chem.MolFromSmiles(smiles)
@@ -174,7 +174,7 @@ print(df[['MW', 'LogP', 'HBD', 'HBA', 'TPSA']].describe().round(2))
 
 ### Paso 4: Aplicar filtros de semejanza a fármacos
 
-```{code-cell} ipython3
+```python
 def check_lipinski(row, max_violations=1):
     """Check if molecule passes Lipinski's Rule of Five."""
     violations = 0
@@ -203,7 +203,7 @@ print(f"  Success rate: {df['DrugLike'].mean()*100:.1f}%")
 
 ### Paso 5: Generación 3D y visualización
 
-```{code-cell} ipython3
+```python
 import py3Dmol
 
 def generate_3d_conformer(smiles, seed=42):
@@ -250,7 +250,7 @@ print(df_subset[['name', 'MW', 'LogP', 'Energy_FF']])
 
 ### Paso 6: Visualizar moléculas seleccionadas
 
-```{code-cell} ipython3
+```python
 # Visualize a drug-like molecule
 selected_smiles = df[df['DrugLike']].iloc[0]['smiles']
 mol_3d, _ = generate_3d_conformer(selected_smiles)
@@ -316,7 +316,7 @@ Derivative screening
 
 ### Paso 8: Analizar la biblioteca
 
-```{code-cell} ipython3
+```python
 import matplotlib.pyplot as plt
 
 fig, axes = plt.subplots(2, 2, figsize=(10, 8))
@@ -365,7 +365,7 @@ plt.show()
 
 ### Paso 9: Exportar resultados
 
-```{code-cell} ipython3
+```python
 # Select drug-like compounds for further study
 drug_like_df = df[df['DrugLike']].copy()
 drug_like_df = drug_like_df.sort_values('LogP')  # Sort by lipophilicity
@@ -387,7 +387,7 @@ $$I_s = \frac{N_{\text{valid with 3D}}}{N_{\text{enumerated}}} \times 100\%$$
 - $I_s > 80\%$: Well-designed library
 - $I_s < 50\%$: Substitution positions or fragments introduce geometric conflicts
 
-```{code-cell} ipython3
+```python
 # Calculate success index for our library
 total_enumerated = len(library)
 valid_3d = len(df[df['DrugLike']])
