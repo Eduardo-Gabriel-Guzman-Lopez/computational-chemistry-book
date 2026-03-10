@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install jupyter-book sphinx-design sphinxcontrib-bibtex sphinxcontrib-mermaid
+          pip install jupyter-book==1.0.4 sphinx-design sphinxcontrib-bibtex sphinxcontrib-mermaid
           mamba install -c conda-forge \
             ghp-import \
             rdkit \
