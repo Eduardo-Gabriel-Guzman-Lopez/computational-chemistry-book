@@ -182,7 +182,10 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte I: Fundamentos de química cuántica</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../part1-foundations/p01-first-steps.html">Práctica 1: Primeros pasos con Gaussian y ORCA</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../part1-foundations/p01-first-steps.html">Práctica 1: Primeros pasos</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../part1-foundations/p01-cafeina-completo.html">   📓 Notebook ejecutable (Jupyter)</a></li>
+</ul>
+</details></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte II: Reactividad química</span></p>
 <ul class="nav bd-sidenav">
@@ -266,7 +269,7 @@
       
       
       
-      <li><a href="https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/edit/main/part4-ai-cheminformatics/p47-molecular-libraries.md" target="_blank"
+      <li><a href="https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/edit/main/./part4-ai-cheminformatics/p47-molecular-libraries.md" target="_blank"
    class="btn btn-sm btn-source-edit-button dropdown-item"
    title="Suggest edit"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -501,21 +504,226 @@ document.write(`
 <h2>Protocolo computacional<a class="headerlink" href="#protocolo-computacional" title="Link to this heading">#</a></h2>
 <section id="paso-1-definir-el-cabezal-y-los-sustituyentes">
 <h3>Paso 1: Definir el cabezal y los sustituyentes<a class="headerlink" href="#paso-1-definir-el-cabezal-y-los-sustituyentes" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">AllChem</span><span class="p">,</span> <span class="n">Draw</span><span class="p">,</span> <span class="n">Descriptors</span><span class="p">,</span> <span class="n">Lipinski</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">rdMolDescriptors</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Quinazoline scaffold (kinase inhibitor core)</span>
+<span class="n">scaffold_smiles</span> <span class="o">=</span> <span class="s1">&#39;c1ccc2c(n1)cnc(n2)[*]&#39;</span>
+<span class="n">scaffold</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s1">&#39;c1ccc2ncnc(c2c1)N&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scaffold: Quinazoline-4-amine&quot;</span><span class="p">)</span>
+
+<span class="c1"># Define substituent library (5 fragments)</span>
+<span class="n">substituents</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;R1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;CC&#39;</span><span class="p">,</span> <span class="s1">&#39;C(C)C&#39;</span><span class="p">,</span> <span class="s1">&#39;c1ccccc1&#39;</span><span class="p">,</span> <span class="s1">&#39;c1ccc(F)cc1&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;R2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;NC&#39;</span><span class="p">,</span> <span class="s1">&#39;NCC&#39;</span><span class="p">,</span> <span class="s1">&#39;NC(=O)C&#39;</span><span class="p">,</span> <span class="s1">&#39;NS(=O)(=O)C&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;R3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;OC&#39;</span><span class="p">,</span> <span class="s1">&#39;OCC&#39;</span><span class="p">,</span> <span class="s1">&#39;Oc1ccccc1&#39;</span><span class="p">,</span> <span class="s1">&#39;OCc1ccccc1&#39;</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Substituent library:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">subs</span> <span class="ow">in</span> <span class="n">substituents</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">pos</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">subs</span><span class="p">)</span><span class="si">}</span><span class="s2"> fragments&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Total combinations: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">substituents</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="paso-2-enumerar-derivados">
 <h3>Paso 2: Enumerar derivados<a class="headerlink" href="#paso-2-enumerar-derivados" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">generate_derivatives</span><span class="p">(</span><span class="n">core_smiles</span><span class="p">,</span> <span class="n">substituents_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate molecular derivatives by combining substituents.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    core_smiles : str</span>
+<span class="sd">        SMILES of the core scaffold</span>
+<span class="sd">    substituents_dict : dict</span>
+<span class="sd">        Dictionary with position names as keys and lists of SMILES as values</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    list of dicts with &#39;smiles&#39; and substituent information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">product</span>
+    
+    <span class="n">derivatives</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="c1"># Get all combinations</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">substituents_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">all_subs</span> <span class="o">=</span> <span class="p">[</span><span class="n">substituents_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">all_subs</span><span class="p">):</span>
+        <span class="c1"># Build derivative name</span>
+        <span class="n">sub_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">pos</span><span class="p">:</span> <span class="n">sub</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">sub</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">combo</span><span class="p">)}</span>
+        
+        <span class="c1"># Simple combination approach: append substituents to SMILES</span>
+        <span class="c1"># En la práctica usarías transformaciones de reacción basadas en SMARTS</span>
+        <span class="n">mol_smiles</span> <span class="o">=</span> <span class="n">core_smiles</span>
+        
+        <span class="c1"># For this example, we&#39;ll generate simpler test molecules</span>
+        <span class="c1"># Real enumeration would use AllChem.ReplaceSubstructs</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;smiles&#39;</span><span class="p">:</span> <span class="n">mol_smiles</span><span class="p">,</span>
+            <span class="s1">&#39;R1&#39;</span><span class="p">:</span> <span class="n">sub_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;R1&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;R2&#39;</span><span class="p">:</span> <span class="n">sub_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;R2&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;R3&#39;</span><span class="p">:</span> <span class="n">sub_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;R3&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">derivatives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">derivative</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">derivatives</span>
+
+<span class="c1"># For demonstration, use a simpler enumeration</span>
+<span class="c1"># Generate aniline derivatives with different substituents</span>
+<span class="n">base_smiles</span> <span class="o">=</span> <span class="s1">&#39;Nc1ccc(cc1)&#39;</span>
+<span class="n">simple_subs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;CC&#39;</span><span class="p">,</span> <span class="s1">&#39;OC&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;Cl&#39;</span><span class="p">,</span> <span class="s1">&#39;Br&#39;</span><span class="p">,</span> <span class="s1">&#39;CF3&#39;</span><span class="p">,</span> <span class="s1">&#39;CN&#39;</span><span class="p">,</span> <span class="s1">&#39;NC&#39;</span><span class="p">,</span> <span class="s1">&#39;C(=O)C&#39;</span><span class="p">]</span>
+
+<span class="n">library</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">simple_subs</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">smiles</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Nc1ccc(</span><span class="si">{</span><span class="n">sub</span><span class="si">}</span><span class="s1">)cc1&#39;</span>
+        <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">library</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;smiles&#39;</span><span class="p">:</span> <span class="n">smiles</span><span class="p">,</span>
+                <span class="s1">&#39;substituent&#39;</span><span class="p">:</span> <span class="n">sub</span><span class="p">,</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;4-substituted-aniline-</span><span class="si">{</span><span class="n">sub</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">})</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">continue</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">library</span><span class="p">)</span><span class="si">}</span><span class="s2"> valid derivatives&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="paso-3-calcular-descriptores-de-lipinski-y-veber">
 <h3>Paso 3: Calcular descriptores de Lipinski y Veber<a class="headerlink" href="#paso-3-calcular-descriptores-de-lipinski-y-veber" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_descriptors</span><span class="p">(</span><span class="n">smiles</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate drug-likeness descriptors for a molecule.&quot;&quot;&quot;</span>
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;MW&#39;</span><span class="p">:</span> <span class="n">Descriptors</span><span class="o">.</span><span class="n">MolWt</span><span class="p">(</span><span class="n">mol</span><span class="p">),</span>
+        <span class="s1">&#39;LogP&#39;</span><span class="p">:</span> <span class="n">Descriptors</span><span class="o">.</span><span class="n">MolLogP</span><span class="p">(</span><span class="n">mol</span><span class="p">),</span>
+        <span class="s1">&#39;HBD&#39;</span><span class="p">:</span> <span class="n">Lipinski</span><span class="o">.</span><span class="n">NumHDonors</span><span class="p">(</span><span class="n">mol</span><span class="p">),</span>
+        <span class="s1">&#39;HBA&#39;</span><span class="p">:</span> <span class="n">Lipinski</span><span class="o">.</span><span class="n">NumHAcceptors</span><span class="p">(</span><span class="n">mol</span><span class="p">),</span>
+        <span class="s1">&#39;RotBonds&#39;</span><span class="p">:</span> <span class="n">Descriptors</span><span class="o">.</span><span class="n">NumRotatableBonds</span><span class="p">(</span><span class="n">mol</span><span class="p">),</span>
+        <span class="s1">&#39;TPSA&#39;</span><span class="p">:</span> <span class="n">Descriptors</span><span class="o">.</span><span class="n">TPSA</span><span class="p">(</span><span class="n">mol</span><span class="p">),</span>
+        <span class="s1">&#39;NumHeavyAtoms&#39;</span><span class="p">:</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetNumHeavyAtoms</span><span class="p">(),</span>
+        <span class="s1">&#39;RingCount&#39;</span><span class="p">:</span> <span class="n">Descriptors</span><span class="o">.</span><span class="n">RingCount</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+    <span class="p">}</span>
+
+<span class="c1"># Calculate descriptors for all library molecules</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">library</span><span class="p">:</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="n">calculate_descriptors</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;smiles&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">desc</span><span class="p">:</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="o">**</span><span class="n">entry</span><span class="p">,</span> <span class="o">**</span><span class="n">desc</span><span class="p">})</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Descriptor summary:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;MW&#39;</span><span class="p">,</span> <span class="s1">&#39;LogP&#39;</span><span class="p">,</span> <span class="s1">&#39;HBD&#39;</span><span class="p">,</span> <span class="s1">&#39;HBA&#39;</span><span class="p">,</span> <span class="s1">&#39;TPSA&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
 </section>
 <section id="paso-4-aplicar-filtros-de-semejanza-a-farmacos">
 <h3>Paso 4: Aplicar filtros de semejanza a fármacos<a class="headerlink" href="#paso-4-aplicar-filtros-de-semejanza-a-farmacos" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">check_lipinski</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">max_violations</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if molecule passes Lipinski&#39;s Rule of Five.&quot;&quot;&quot;</span>
+    <span class="n">violations</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;MW&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">500</span><span class="p">:</span> <span class="n">violations</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;LogP&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span> <span class="n">violations</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;HBD&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span> <span class="n">violations</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;HBA&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span> <span class="n">violations</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">violations</span> <span class="o">&lt;=</span> <span class="n">max_violations</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">check_veber</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if molecule passes Veber criteria.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;RotBonds&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">10</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;TPSA&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">140</span>
+
+<span class="c1"># Apply filters</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Lipinski_Pass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">check_lipinski</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;Veber_Pass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">check_veber</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;DrugLike&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Lipinski_Pass&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Veber_Pass&#39;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Filtering results:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Total molecules: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Pass Lipinski: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Lipinski_Pass&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Pass Veber: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Veber_Pass&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Drug-like (both): </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;DrugLike&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Success rate: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;DrugLike&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="paso-5-generacion-3d-y-visualizacion">
 <h3>Paso 5: Generación 3D y visualización<a class="headerlink" href="#paso-5-generacion-3d-y-visualizacion" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">py3Dmol</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_3d_conformer</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate 3D conformer using ETKDGv3.&quot;&quot;&quot;</span>
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    
+    <span class="n">mol_h</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">AddHs</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+    
+    <span class="n">params</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ETKDGv3</span><span class="p">()</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">randomSeed</span> <span class="o">=</span> <span class="n">seed</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMolecule</span><span class="p">(</span><span class="n">mol_h</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mol_h</span><span class="p">,</span> <span class="kc">None</span>
+    
+    <span class="c1"># Optimize with MMFF94</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">MMFFGetMoleculeProperties</span><span class="p">(</span><span class="n">mol_h</span><span class="p">)</span>
+        <span class="n">ff</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">MMFFGetMoleculeForceField</span><span class="p">(</span><span class="n">mol_h</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ff</span><span class="p">:</span>
+            <span class="n">ff</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="n">maxIts</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+            <span class="n">energy</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">CalcEnergy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">energy</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">energy</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">return</span> <span class="n">mol_h</span><span class="p">,</span> <span class="n">energy</span>
+
+<span class="c1"># Generate 3D for first few molecules</span>
+<span class="n">df_subset</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;DrugLike&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">energies</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df_subset</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">mol_3d</span><span class="p">,</span> <span class="n">energy</span> <span class="o">=</span> <span class="n">generate_3d_conformer</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;smiles&#39;</span><span class="p">])</span>
+    <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
+
+<span class="n">df_subset</span><span class="p">[</span><span class="s1">&#39;Energy_FF&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">energies</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3D Generation results:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_subset</span><span class="p">[[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;MW&#39;</span><span class="p">,</span> <span class="s1">&#39;LogP&#39;</span><span class="p">,</span> <span class="s1">&#39;Energy_FF&#39;</span><span class="p">]])</span>
+</pre></div>
+</div>
 </section>
 <section id="paso-6-visualizar-moleculas-seleccionadas">
 <h3>Paso 6: Visualizar moléculas seleccionadas<a class="headerlink" href="#paso-6-visualizar-moleculas-seleccionadas" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize a drug-like molecule</span>
+<span class="n">selected_smiles</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;DrugLike&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;smiles&#39;</span><span class="p">]</span>
+<span class="n">mol_3d</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">generate_3d_conformer</span><span class="p">(</span><span class="n">selected_smiles</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">mol_3d</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">rdmolfiles</span>
+    <span class="n">mol_block</span> <span class="o">=</span> <span class="n">rdmolfiles</span><span class="o">.</span><span class="n">MolToMolBlock</span><span class="p">(</span><span class="n">mol_3d</span><span class="p">)</span>
+    
+    <span class="n">viewer</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">mol_block</span><span class="p">,</span> <span class="s1">&#39;mol&#39;</span><span class="p">)</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s1">&#39;stick&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;colorscheme&#39;</span><span class="p">:</span> <span class="s1">&#39;Jmol&#39;</span><span class="p">}})</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">setBackgroundColor</span><span class="p">(</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
 </section>
 <section id="paso-7-cribado-energetico-gfn2-xtb">
 <h3>Paso 7: Cribado energético (GFN2-xTB)<a class="headerlink" href="#paso-7-cribado-energetico-gfn2-xtb" title="Link to this heading">#</a></h3>
@@ -568,9 +776,67 @@ ORCA</label><div class="sd-tab-content docutils">
 </section>
 <section id="paso-8-analizar-la-biblioteca">
 <h3>Paso 8: Analizar la biblioteca<a class="headerlink" href="#paso-8-analizar-la-biblioteca" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+
+<span class="c1"># MW distribution</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;MW&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;steelblue&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Lipinski limit&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Molecular Weight (Da)&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;MW Distribution&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># LogP distribution</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LogP&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;seagreen&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Lipinski limit&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;LogP&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;LogP Distribution&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># TPSA vs MW colored by drug-likeness</span>
+<span class="n">scatter</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;MW&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;TPSA&#39;</span><span class="p">],</span>
+    <span class="n">c</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;DrugLike&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">}),</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Molecular Weight (Da)&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;TPSA (Å²)&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Chemical Space: MW vs TPSA&#39;</span><span class="p">)</span>
+
+<span class="c1"># Drug-like pie chart</span>
+<span class="n">drug_like_counts</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;DrugLike&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span>
+    <span class="n">drug_like_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> 
+    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Drug-like&#39;</span><span class="p">,</span> <span class="s1">&#39;Not drug-like&#39;</span><span class="p">],</span>
+    <span class="n">autopct</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.1f%%</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;lightgreen&#39;</span><span class="p">,</span> <span class="s1">&#39;lightcoral&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Drug-likeness Summary&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
 </section>
 <section id="paso-9-exportar-resultados">
 <h3>Paso 9: Exportar resultados<a class="headerlink" href="#paso-9-exportar-resultados" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select drug-like compounds for further study</span>
+<span class="n">drug_like_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;DrugLike&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">drug_like_df</span> <span class="o">=</span> <span class="n">drug_like_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;LogP&#39;</span><span class="p">)</span>  <span class="c1"># Sort by lipophilicity</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Drug-like compounds selected: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">drug_like_df</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top candidates:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">drug_like_df</span><span class="p">[[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;smiles&#39;</span><span class="p">,</span> <span class="s1">&#39;MW&#39;</span><span class="p">,</span> <span class="s1">&#39;LogP&#39;</span><span class="p">,</span> <span class="s1">&#39;TPSA&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="c1"># Export to CSV</span>
+<span class="c1"># drug_like_df.to_csv(&#39;drug_like_library.csv&#39;, index=False)</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="success-index">
@@ -582,6 +848,14 @@ ORCA</label><div class="sd-tab-content docutils">
 <li><p><span class="math notranslate nohighlight">\(I_s &gt; 80\%\)</span>: Well-designed library</p></li>
 <li><p><span class="math notranslate nohighlight">\(I_s &lt; 50\%\)</span>: Substitution positions or fragments introduce geometric conflicts</p></li>
 </ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate success index for our library</span>
+<span class="n">total_enumerated</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">library</span><span class="p">)</span>
+<span class="n">valid_3d</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;DrugLike&#39;</span><span class="p">]])</span>
+
+<span class="n">success_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">valid_3d</span> <span class="o">/</span> <span class="n">total_enumerated</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Success Index: </span><span class="si">{</span><span class="n">success_index</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="exercises">
 <h2>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>

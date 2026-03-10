@@ -17,13 +17,46 @@
 
 Antes de realizar cualquier cálculo cuántico, una molécula debe existir como un objeto computacional con coordenadas tridimensionales explícitas. Este paso, aparentemente trivial, encierra decisiones metodológicas con consecuencias directas sobre la calidad de todos los cálculos posteriores: una geometría inicial mal construida puede converger a un mínimo incorrecto, producir frecuencias imaginarias espurias o generar resultados numéricos que no corresponden a ninguna especie química real.
 
-La representación más común en quimioinformática es el **SMILES** (*Simplified Molecular Input Line Entry System*), una cadena de texto que codifica la conectividad molecular mediante reglas gramaticales precisas. Un SMILES como `CC(=O)Nc1ccccc1` describe sin ambigüedad la acetanilida; sin embargo, no contiene información sobre los ángulos de enlace, las longitudes de enlace ni la disposición espacial de los átomos. Pasar de esa cadena lineal a un conjunto de coordenadas cartesianas $(x_i, y_i, z_i)$ es el problema que resuelve esta práctica.
+La representación más común en quimioinformática es el **SMILES** (*Simplified Molecular Input Line Entry System*), una cadena de texto que codifica la conectividad molecular mediante reglas gramaticales precisas. Un SMILES como `CC(=O)Nc1ccccc1` describe sin ambigüedad la acetanilida; sin embargo, no contiene información sobre los ángulos de enlace, las longitudes de enlace ni la disposición espacial de los átomos. Pasar de esa cadena lineal a un conjunto de coordenadas cartesianas $(x_i, y_i, z_i)$ es el problema que resuelve esta práctica {cite:p}`rdkit`.
 
-Las herramientas modernas —principalmente RDKit y OpenBabel— implementan algoritmos de incrustación tridimensional que combinan reglas geométricas empíricas, campos de fuerza y, en el caso del algoritmo ETKDG (*Experimental-Torsion distance geometry with basic Knowledge*), distribuciones de ángulos diedros extraídas de la Cambridge Structural Database. El resultado es una geometría de partida razonable en pocos milisegundos, sin importar el tamaño de la molécula.
+Las herramientas modernas —principalmente RDKit {cite:p}`rdkit` y OpenBabel {cite:p}`openbabel`— implementan algoritmos de incrustación tridimensional que combinan reglas geométricas empíricas, campos de fuerza y, en el caso del algoritmo ETKDG (*Experimental-Torsion distance geometry with basic Knowledge*), distribuciones de ángulos diedros extraídas de la Cambridge Structural Database {cite:p}`etkdg`. El resultado es una geometría de partida razonable en pocos milisegundos, sin importar el tamaño de la molécula.
 
-Una vez disponible la geometría inicial, la práctica introduce el primer pipeline del manual: pre-optimización con un campo de fuerza (MMFF94) seguida de optimización semiempírica con GFN2-xTB. Este protocolo de dos pasos es suficiente para la mayoría de las moléculas orgánicas pequeñas y medianas, y constituye el punto de partida estándar para los cálculos de estructura electrónica del Bloque 2.
+Una vez disponible la geometría inicial, la práctica introduce el primer pipeline del manual: pre-optimización con un campo de fuerza (MMFF94) seguida de optimización semiempírica con GFN2-xTB {cite:p}`grimme_xtb`. Este protocolo de dos pasos es suficiente para la mayoría de las moléculas orgánicas pequeñas y medianas, y constituye el punto de partida estándar para los cálculos de estructura electrónica del Bloque 2.
 
 En términos del modelo Semilla–Bosque: la **semilla** es la construcción y optimización de una molécula sencilla que el estudiante ejecuta por sí mismo. El **bosque** es un dataset de 50 moléculas orgánicas con diversidad estructural —aromáticos, heteroaromáticos, sistemas flexibles y casos difíciles— para los cuales el mismo pipeline ya fue ejecutado. El análisis del bosque permite identificar qué características estructurales hacen que la incrustación 3D sea más o menos confiable, y cómo la energía de pre-optimización se correlaciona con descriptores topológicos básicos.
+
+### Pipeline del protocolo
+
+```{mermaid}
+%%{init: {'flowchart': {'curve': 'linear', 'nodeSpacing': 50, 'rankSpacing': 80, 'padding': 20}}}%%
+graph TD
+    A["<b>SMILES</b><br/>Texto molecular"]
+    B["<b>Grafo molecular</b><br/>Conectividad + orden de enlace"]
+    C["<b>Geometría 3D</b><br/>Incrustación ETKDG"]
+    D["<b>Pre-optimización</b><br/>Campo de fuerza MMFF94"]
+    E["<b>Optimización</b><br/>Semiempírica GFN2-xTB"]
+    F["<b>Dataset</b><br/>Parámetros estructurales"]
+    
+    A -->|RDKit| B
+    B -->|ETKDG| C
+    C -->|MMFF94| D
+    D -->|GFN2-xTB| E
+    E -->|Análisis| F
+    
+    style A fill:#DCE6F2,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style B fill:#DCE6F2,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style C fill:#E8F4F8,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style D fill:#E8F4F8,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style E fill:#E8F4F8,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style F fill:#D4E6F1,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+```
+
+```{admonition} Ejecuta esta práctica en forma interactiva
+:class: note
+📓 **Jupyter Notebook completo**: [p01-cafeina-completo.ipynb](./p01-cafeina-completo.ipynb)  
+☁️ **Google Colab**: Click en el botón "Colab" en la parte superior de cualquier celda de código  
+🔗 **Binder**: Click en el botón "Binder" para ejecutar sin instalación local
+```
 
 ## Marco teórico
 
@@ -188,22 +221,9 @@ Basándome en las preguntas previas, espero que el anillo purínico sea plano (o
 
 ## Protocolo computacional
 
-El protocolo consta de **6 pasos principales** que transforman una cadena SMILES en una geometría 3D optimizada:
-
-![Flujo del protocolo: SMILES → Geometría 3D optimizada](../assets/images/p01-protocol-diagram.png)
-
-**Detalles de cada paso:**
-
-- **Paso 1**: Construir el grafo molecular a partir del SMILES
-- **Paso 2**: Visualizar la estructura 2D para verificación
-- **Paso 3**: Incrustación 3D con ETKDG
-- **Paso 4**: Pre-optimización con campo de fuerza MMFF94
-- **Paso 5**: Visualización 3D con py3Dmol
-- **Paso 6**: Exportar para optimización semiempírica (GFN2-xTB)
-
 ### Paso 1: Construir el grafo molecular
 
-```{code-cell} ipython3
+```python
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
 from rdkit.Chem import rdMolDescriptors
@@ -227,14 +247,14 @@ print(f'Enlaces rotativos: {rdMolDescriptors.CalcNumRotatableBonds(mol)}')
 
 ### Paso 2: Visualizar la estructura 2D
 
-```{code-cell} ipython3
+```python
 # Generar representación 2D
 Draw.MolToImage(mol, size=(400, 300))
 ```
 
 ### Paso 3: Incrustación 3D con ETKDG
 
-```{code-cell} ipython3
+```python
 import random
 random.seed(42)  # Reproducibilidad
 
@@ -256,7 +276,7 @@ print(f'Número de átomos (con H): {mol_h.GetNumAtoms()}')
 
 ### Paso 4: Pre-optimización con campo de fuerza MMFF94
 
-```{code-cell} ipython3
+```python
 # Pre-optimización con MMFF94
 props = AllChem.MMFFGetMoleculeProperties(mol_h)
 ff = AllChem.MMFFGetMoleculeForceField(mol_h, props)
@@ -274,7 +294,7 @@ print(f'Convergencia (0=OK): {conv}')
 
 ### Paso 5: Visualización 3D con py3Dmol
 
-```{code-cell} ipython3
+```python
 import py3Dmol
 from rdkit.Chem import rdmolfiles
 
@@ -292,7 +312,7 @@ visor.show()
 
 ### Paso 6: Exportar para optimización semiempírica
 
-```{code-cell} ipython3
+```python
 # Guardar archivo XYZ para optimización xTB
 from rdkit.Chem import rdmolfiles
 rdmolfiles.MolToXYZFile(mol_h, 'cafeina_FF.xyz')
@@ -390,7 +410,7 @@ columnas = {
 
 Integrar la semilla (cafeína) con el bosque:
 
-```{code-cell} ipython3
+```python
 import pandas as pd
 
 df = pd.read_csv('p01_bosque_resultados.csv')
@@ -417,7 +437,7 @@ print(df_final.tail(3))
 
 ### Estadística descriptiva
 
-```{code-cell} ipython3
+```python
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -495,10 +515,8 @@ El análisis de correlaciones debería revelar que el tiempo de optimización xT
 
 - **Puerta a DFT**: usar `cafeina_GFN2.xyz` como input de la Práctica 4 (B3LYP/6-31G(d)) y cuantificar cambios geométricos.
 
-## Referencias
+## Referencias bibliográficas
 
-1. Landrum, G. *RDKit: Open-Source Cheminformatics*. https://www.rdkit.org/
-
-2. Bannwarth, C.; Ehlert, S.; Grimme, S. *GFN2-xTB — An Accurate and Broadly Parametrized Self-Consistent Tight-Binding Quantum Chemical Method*. J. Chem. Theory Comput. **15**(3), 1652–1671, 2019.
-
-3. Riniker, S.; Landrum, G.A. *Better Informed Distance Geometry: Using What We Know To Improve Conformation Generation*. J. Chem. Inf. Model. **55**(12), 2562–2574, 2015.
+```{bibliography}
+:filter: cited
+```
