@@ -21,6 +21,7 @@ nglview>=3.0.0
 jupyter-book>=0.15.0
 sphinx-design>=0.4.0
 sphinxcontrib-mermaid>=0.7.1
+sphinxcontrib-bibtex>=2.5.0
 
 # Interactive notebooks
 jupyterlab>=3.0.0

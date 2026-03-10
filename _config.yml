@@ -42,6 +42,7 @@ sphinx:
     - sphinx_design
     - myst_nb
     - sphinxcontrib.mermaid
+    - sphinxcontrib.bibtex
   config:
     language: es
     mermaid_version: "10.6.1"
@@ -50,6 +51,8 @@ sphinx:
         'securityLevel': 'loose',
         'flowchart': {'curve': 'linear', 'nodeSpacing': 50, 'rankSpacing': 80}
       });
+    bibtex_bibfiles:
+      - references.bib
 
 # MyST parser extensions
 parse:

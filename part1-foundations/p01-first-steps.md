@@ -17,11 +17,11 @@
 
 Antes de realizar cualquier cálculo cuántico, una molécula debe existir como un objeto computacional con coordenadas tridimensionales explícitas. Este paso, aparentemente trivial, encierra decisiones metodológicas con consecuencias directas sobre la calidad de todos los cálculos posteriores: una geometría inicial mal construida puede converger a un mínimo incorrecto, producir frecuencias imaginarias espurias o generar resultados numéricos que no corresponden a ninguna especie química real.
 
-La representación más común en quimioinformática es el **SMILES** (*Simplified Molecular Input Line Entry System*), una cadena de texto que codifica la conectividad molecular mediante reglas gramaticales precisas. Un SMILES como `CC(=O)Nc1ccccc1` describe sin ambigüedad la acetanilida; sin embargo, no contiene información sobre los ángulos de enlace, las longitudes de enlace ni la disposición espacial de los átomos. Pasar de esa cadena lineal a un conjunto de coordenadas cartesianas $(x_i, y_i, z_i)$ es el problema que resuelve esta práctica.
+La representación más común en quimioinformática es el **SMILES** (*Simplified Molecular Input Line Entry System*), una cadena de texto que codifica la conectividad molecular mediante reglas gramaticales precisas. Un SMILES como `CC(=O)Nc1ccccc1` describe sin ambigüedad la acetanilida; sin embargo, no contiene información sobre los ángulos de enlace, las longitudes de enlace ni la disposición espacial de los átomos. Pasar de esa cadena lineal a un conjunto de coordenadas cartesianas $(x_i, y_i, z_i)$ es el problema que resuelve esta práctica {cite:p}`rdkit`.
 
-Las herramientas modernas —principalmente RDKit y OpenBabel— implementan algoritmos de incrustación tridimensional que combinan reglas geométricas empíricas, campos de fuerza y, en el caso del algoritmo ETKDG (*Experimental-Torsion distance geometry with basic Knowledge*), distribuciones de ángulos diedros extraídas de la Cambridge Structural Database. El resultado es una geometría de partida razonable en pocos milisegundos, sin importar el tamaño de la molécula.
+Las herramientas modernas —principalmente RDKit {cite:p}`rdkit` y OpenBabel {cite:p}`openbabel`— implementan algoritmos de incrustación tridimensional que combinan reglas geométricas empíricas, campos de fuerza y, en el caso del algoritmo ETKDG (*Experimental-Torsion distance geometry with basic Knowledge*), distribuciones de ángulos diedros extraídas de la Cambridge Structural Database {cite:p}`etkdg`. El resultado es una geometría de partida razonable en pocos milisegundos, sin importar el tamaño de la molécula.
 
-Una vez disponible la geometría inicial, la práctica introduce el primer pipeline del manual: pre-optimización con un campo de fuerza (MMFF94) seguida de optimización semiempírica con GFN2-xTB. Este protocolo de dos pasos es suficiente para la mayoría de las moléculas orgánicas pequeñas y medianas, y constituye el punto de partida estándar para los cálculos de estructura electrónica del Bloque 2.
+Una vez disponible la geometría inicial, la práctica introduce el primer pipeline del manual: pre-optimización con un campo de fuerza (MMFF94) seguida de optimización semiempírica con GFN2-xTB {cite:p}`grimme_xtb`. Este protocolo de dos pasos es suficiente para la mayoría de las moléculas orgánicas pequeñas y medianas, y constituye el punto de partida estándar para los cálculos de estructura electrónica del Bloque 2.
 
 En términos del modelo Semilla–Bosque: la **semilla** es la construcción y optimización de una molécula sencilla que el estudiante ejecuta por sí mismo. El **bosque** es un dataset de 50 moléculas orgánicas con diversidad estructural —aromáticos, heteroaromáticos, sistemas flexibles y casos difíciles— para los cuales el mismo pipeline ya fue ejecutado. El análisis del bosque permite identificar qué características estructurales hacen que la incrustación 3D sea más o menos confiable, y cómo la energía de pre-optimización se correlaciona con descriptores topológicos básicos.
 
@@ -515,10 +515,8 @@ El análisis de correlaciones debería revelar que el tiempo de optimización xT
 
 - **Puerta a DFT**: usar `cafeina_GFN2.xyz` como input de la Práctica 4 (B3LYP/6-31G(d)) y cuantificar cambios geométricos.
 
-## Referencias
+## Referencias bibliográficas
 
-1. Landrum, G. *RDKit: Open-Source Cheminformatics*. https://www.rdkit.org/
-
-2. Bannwarth, C.; Ehlert, S.; Grimme, S. *GFN2-xTB — An Accurate and Broadly Parametrized Self-Consistent Tight-Binding Quantum Chemical Method*. J. Chem. Theory Comput. **15**(3), 1652–1671, 2019.
-
-3. Riniker, S.; Landrum, G.A. *Better Informed Distance Geometry: Using What We Know To Improve Conformation Generation*. J. Chem. Inf. Model. **55**(12), 2562–2574, 2015.
+```{bibliography}
+:filter: cited
+```
