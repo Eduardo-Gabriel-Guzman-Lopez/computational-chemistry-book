@@ -196,7 +196,7 @@ El protocolo consta de **6 pasos principales** que transforman una cadena SMILES
 
 ### Paso 1: Construir el grafo molecular
 
-```{code-cell} ipython3
+```python
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
 from rdkit.Chem import rdMolDescriptors
@@ -220,14 +220,14 @@ print(f'Enlaces rotativos: {rdMolDescriptors.CalcNumRotatableBonds(mol)}')
 
 ### Paso 2: Visualizar la estructura 2D
 
-```{code-cell} ipython3
+```python
 # Generar representación 2D
 Draw.MolToImage(mol, size=(400, 300))
 ```
 
 ### Paso 3: Incrustación 3D con ETKDG
 
-```{code-cell} ipython3
+```python
 import random
 random.seed(42)  # Reproducibilidad
 
@@ -249,7 +249,7 @@ print(f'Número de átomos (con H): {mol_h.GetNumAtoms()}')
 
 ### Paso 4: Pre-optimización con campo de fuerza MMFF94
 
-```{code-cell} ipython3
+```python
 # Pre-optimización con MMFF94
 props = AllChem.MMFFGetMoleculeProperties(mol_h)
 ff = AllChem.MMFFGetMoleculeForceField(mol_h, props)
@@ -267,7 +267,7 @@ print(f'Convergencia (0=OK): {conv}')
 
 ### Paso 5: Visualización 3D con py3Dmol
 
-```{code-cell} ipython3
+```python
 import py3Dmol
 from rdkit.Chem import rdmolfiles
 
@@ -285,7 +285,7 @@ visor.show()
 
 ### Paso 6: Exportar para optimización semiempírica
 
-```{code-cell} ipython3
+```python
 # Guardar archivo XYZ para optimización xTB
 from rdkit.Chem import rdmolfiles
 rdmolfiles.MolToXYZFile(mol_h, 'cafeina_FF.xyz')
@@ -383,7 +383,7 @@ columnas = {
 
 Integrar la semilla (cafeína) con el bosque:
 
-```{code-cell} ipython3
+```python
 import pandas as pd
 
 df = pd.read_csv('p01_bosque_resultados.csv')
@@ -410,7 +410,7 @@ print(df_final.tail(3))
 
 ### Estadística descriptiva
 
-```{code-cell} ipython3
+```python
 import pandas as pd
 import matplotlib.pyplot as plt
 
