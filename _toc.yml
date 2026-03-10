@@ -12,7 +12,10 @@ parts:
   - caption: "Parte I: Fundamentos de química cuántica"
     chapters:
       - file: part1-foundations/p01-first-steps
-        title: "Práctica 1: Primeros pasos con Gaussian y ORCA"
+        title: "Práctica 1: Primeros pasos"
+        sections:
+          - file: part1-foundations/p01-cafeina-completo
+            title: "   📓 Notebook ejecutable (Jupyter)"
       # Future practices will be added here
       # - file: part1-foundations/p02-name
       # - file: part1-foundations/p03-name

@@ -25,7 +25,38 @@ Una vez disponible la geometría inicial, la práctica introduce el primer pipel
 
 En términos del modelo Semilla–Bosque: la **semilla** es la construcción y optimización de una molécula sencilla que el estudiante ejecuta por sí mismo. El **bosque** es un dataset de 50 moléculas orgánicas con diversidad estructural —aromáticos, heteroaromáticos, sistemas flexibles y casos difíciles— para los cuales el mismo pipeline ya fue ejecutado. El análisis del bosque permite identificar qué características estructurales hacen que la incrustación 3D sea más o menos confiable, y cómo la energía de pre-optimización se correlaciona con descriptores topológicos básicos.
 
-![Pipeline: SMILES → Geometría 3D optimizada](../assets/images/diagram_P01.png)
+### Pipeline del protocolo
+
+```{mermaid}
+%%{init: {'flowchart': {'curve': 'linear', 'nodeSpacing': 50, 'rankSpacing': 80, 'padding': 20}}}%%
+graph TD
+    A["<b>SMILES</b><br/>Texto molecular"]
+    B["<b>Grafo molecular</b><br/>Conectividad + orden de enlace"]
+    C["<b>Geometría 3D</b><br/>Incrustación ETKDG"]
+    D["<b>Pre-optimización</b><br/>Campo de fuerza MMFF94"]
+    E["<b>Optimización</b><br/>Semiempírica GFN2-xTB"]
+    F["<b>Dataset</b><br/>Parámetros estructurales"]
+    
+    A -->|RDKit| B
+    B -->|ETKDG| C
+    C -->|MMFF94| D
+    D -->|GFN2-xTB| E
+    E -->|Análisis| F
+    
+    style A fill:#DCE6F2,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style B fill:#DCE6F2,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style C fill:#E8F4F8,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style D fill:#E8F4F8,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style E fill:#E8F4F8,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style F fill:#D4E6F1,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+```
+
+```{admonition} Ejecuta esta práctica en forma interactiva
+:class: note
+📓 **Jupyter Notebook completo**: [p01-cafeina-completo.ipynb](./p01-cafeina-completo.ipynb)  
+☁️ **Google Colab**: Click en el botón "Colab" en la parte superior de cualquier celda de código  
+🔗 **Binder**: Click en el botón "Binder" para ejecutar sin instalación local
+```
 
 ## Marco teórico
 

@@ -41,8 +41,15 @@ sphinx:
   extra_extensions:
     - sphinx_design
     - myst_nb
+    - sphinxcontrib.mermaid
   config:
     language: es
+    mermaid_version: "10.6.1"
+    mermaid_init_js: |
+      mermaid.initialize({
+        'securityLevel': 'loose',
+        'flowchart': {'curve': 'linear', 'nodeSpacing': 50, 'rankSpacing': 80}
+      });
 
 # MyST parser extensions
 parse:

@@ -1,13 +1,21 @@
-graph LR
-    A["<b>SMILES</b><br/>Texto"] -->|RDKit| B["<b>Grafo molecular</b><br/>Conectividad"]
-    B -->|ETKDG| C["<b>Geometría 3D</b><br/>Incrustación"]
-    C -->|MMFF94| D["<b>Pre-optimización</b><br/>Campo de fuerza"]
-    D -->|GFN2-xTB| E["<b>Optimización</b><br/>Semiempírica"]
-    E -->|Análisis| F["<b>Dataset</b><br/>Estructural"]
+%%{init: {'flowchart': {'curve': 'linear', 'nodeSpacing': 50, 'rankSpacing': 80, 'padding': 20}}}%%
+graph TD
+    A["<b>SMILES</b><br/>Texto molecular"]
+    B["<b>Grafo molecular</b><br/>Conectividad + orden de enlace"]
+    C["<b>Geometría 3D</b><br/>Incrustación ETKDG"]
+    D["<b>Pre-optimización</b><br/>Campo de fuerza MMFF94"]
+    E["<b>Optimización</b><br/>Semiempírica GFN2-xTB"]
+    F["<b>Dataset</b><br/>Parámetros estructurales"]
     
-    style A fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
-    style B fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
-    style C fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
-    style D fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
-    style E fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
-    style F fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
+    A -->|RDKit| B
+    B -->|ETKDG| C
+    C -->|MMFF94| D
+    D -->|GFN2-xTB| E
+    E -->|Análisis| F
+    
+    style A fill:#DCE6F2,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style B fill:#DCE6F2,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style C fill:#E8F4F8,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style D fill:#E8F4F8,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style E fill:#E8F4F8,stroke:#2A6F97,stroke-width:3px,color:#0F2747
+    style F fill:#D4E6F1,stroke:#2A6F97,stroke-width:3px,color:#0F2747

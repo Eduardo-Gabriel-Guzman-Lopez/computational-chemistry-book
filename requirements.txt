@@ -20,6 +20,7 @@ nglview>=3.0.0
 # Jupyter Book build (for local development)
 jupyter-book>=0.15.0
 sphinx-design>=0.4.0
+sphinxcontrib-mermaid>=0.7.1
 
 # Interactive notebooks
 jupyterlab>=3.0.0
