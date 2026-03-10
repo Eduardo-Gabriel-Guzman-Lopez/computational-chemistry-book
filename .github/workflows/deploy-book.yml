@@ -30,11 +30,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install jupyter-book sphinx-design sphinxcontrib-bibtex sphinxcontrib-mermaid
           mamba install -c conda-forge \
-            jupyter-book \
-            sphinx-design \
-            sphinxcontrib-bibtex \
-            sphinxcontrib-mermaid \
             ghp-import \
             rdkit \
             numpy \
@@ -60,7 +57,7 @@ jobs:
       - name: Build book
         run: |
           echo "Starting Jupyter Book build..."
-          jupyter-book build . --warningiserror --keep-going
+          jupyter-book build . -W --keep-going
 
       - name: Inspect build output
         run: |
