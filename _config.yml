@@ -1,15 +1,26 @@
-# Book settings
-title: "Manual de prácticas para química computacional. Del orbital al espacio químico"
-author: "Azriel Belgrado"
-copyright: "2026"
-# logo: assets/images/logo.png  # comentado porque no existe el archivo
+# ══════════════════════════════════════════════════════════════
+# _config.yml  —  Jupyter Book
+# Manual de prácticas de química computacional
+# "Del orbital al espacio químico"
+# ══════════════════════════════════════════════════════════════
 
+title      : "Del orbital al espacio químico"
+author     : "Eduardo Gabriel Guzmán-López y Miguel Reina"
+copyright  : "2025, UNAM · Facultad de Química"
+#logo       : "assets/logo_fq_unam.png"
 
 # Execution settings
+#execute:
+#  execute_notebooks: auto
+#  timeout: 600
+#  allow_errors: false
+
+# ── Motor de ejecución ──
+# Los notebooks NO se ejecutan durante el build (outputs pre-generados)
 execute:
-  execute_notebooks: auto
-  timeout: 600
-  allow_errors: false
+  execute_notebooks  : "off"
+  timeout            : 120
+  allow_errors       : false
 
 # Repository info
 repository:
@@ -17,51 +28,86 @@ repository:
   path_to_book: "."
   branch: main
 
-# HTML settings
+# ── Botones en cada página ──
 html:
-  use_issues_button: true
-  use_repository_button: true
-  use_edit_page_button: true
-  home_page_in_navbar: true
-  # add custom CSS and logo/cover graphic
-  # No logo image provided yet; using cover.png if desired
-  #favicon: assets/images/logo.png
-  #logo: assets/images/logo.png
+  use_issues_button       : true
+  use_repository_button   : true
+  use_edit_page_button    : false   # fuente en LaTeX, no editable desde web
+  home_page_in_navbar     : true
+#  favicon                 : "assets/favicon.ico"
+#  extra_navbar            : |
+#    <a href="https://github.com/qcmanual/del-orbital-al-espacio-quimico/releases/latest">
+#    📄 Descargar PDF</a>
   extra_css:
     - _static/custom.css
-
+  comments:
+    hypothesis: false
+    utterances:
+      repo: "Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book"
 
 # Launch buttons for interactivity
 launch_buttons:
   notebook_interface: "jupyterlab"
+#  notebook_interface : "classic"
   binderhub_url: "https://mybinder.org"
   colab_url: "https://colab.research.google.com"
   thebe: true
 
-# Sphinx extensions
+# ── Sphinx / MyST ──
+parse:
+  myst_enable_extensions:
+    - amsmath           # ecuaciones LaTeX display
+    - colon_fence       # ::: sintaxis alternativa de admonitions
+    - deflist           # listas de definiciones
+    - dollarmath        # $...$ y $$...$$ inline y display
+    - html_admonition
+    - html_image        # <img> en Markdown
+    - smartquotes       # comillas tipográficas automáticas
+    - substitution      # {{variable}} en Markdown
+    - tasklist          # - [ ] checkboxes
+  myst_dmath_allow_labels : true
+  myst_heading_anchors    : 3
+
+# Sustituciones globales (disponibles en todos los archivos .md y .ipynb)
+  myst_substitutions:
+    orca_version   : "ORCA 5.0.4"
+    g16_version    : "Gaussian 16 Rev. C.02"
+    xtb_version    : "xTB 6.6.1"
+    rdkit_version  : "RDKit 2023.09"
+    repo_url       : "https://github.com/qcmanual/del-orbital-al-espacio-quimico"
+    colab_base     : "https://colab.research.google.com/github/qcmanual/del-orbital-al-espacio-quimico/blob/main/notebooks"
+
+# ── Extensiones Sphinx adicionales ──
 sphinx:
   extra_extensions:
+    - sphinx_tabs.tabs          # pestañas ORCA / G16 (tab-set MyST)
+    - sphinx_copybutton         # botón "copiar" en bloques de código
+    - sphinx_togglebutton       # bloques colapsables (soluciones)
     - sphinx_design
     - myst_nb
     - sphinxcontrib.mermaid
     - sphinxcontrib.bibtex
   config:
-    language: es
+    language                    : es
     mermaid_version: "10.6.1"
-    # mermaid_init_js was removed because the current sphinxcontrib-mermaid
-    # extension no longer recognizes it; keeping it causes a -W build error
     bibtex_bibfiles:
       - references.bib
     exclude_patterns:
-      - README.md  # 跳过 Unused README to avoid warning treated-as-error
-
-# MyST parser extensions
-parse:
-  myst_enable_extensions:
-    - amsmath
-    - colon_fence
-    - deflist
-    - dollarmath
-    - html_admonition
-    - substitution
-    - tasklist
+      - README.md
+      - .venv/**
+      - _build/**
+      - .git/**
+    html_theme                  : "sphinx_book_theme"
+    html_theme_options:
+      show_toc_level            : 2
+      navigation_with_keys      : true
+      repository_url            : "https://github.com/qcmanual/del-orbital-al-espacio-quimico"
+      repository_branch         : main
+      use_source_button         : false
+      use_issues_button         : true
+      use_repository_button     : true
+    # sphinx-copybutton: no copiar prompts de shell
+    copybutton_prompt_text      : "$ |>>> |\\.\\.\\. |\\$ "
+    copybutton_prompt_is_regexp : true
+    # Idioma para fechas, etc.
+    today_fmt                   : "%d de %B de %Y"

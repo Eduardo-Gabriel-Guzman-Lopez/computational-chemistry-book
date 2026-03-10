@@ -1,0 +1,102 @@
+# .github/workflows/deploy.yml
+# ══════════════════════════════════════════════════════════════
+# Build del Jupyter Book y deploy a GitHub Pages.
+#
+# Se activa en cada push a main.
+# El flujo completo es:
+#   1. tex2ipynb.py convierte todos los .tex → .ipynb
+#   2. jupyter-book build genera el HTML estático
+#   3. gh-pages publica en https://qcmanual.github.io/
+#                           del-orbital-al-espacio-quimico
+# ══════════════════════════════════════════════════════════════
+
+name: Build & Deploy Jupyter Book
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]          # solo build, sin deploy en PRs
+  workflow_dispatch:           # permite lanzar manualmente
+
+# Permisos para GitHub Pages
+permissions:
+  contents : write
+  pages    : write
+  id-token : write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # ── 1. Checkout ──────────────────────────────────────
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      # ── 2. Python ────────────────────────────────────────
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      # ── 3. Dependencias ──────────────────────────────────
+      - name: Instalar dependencias del build
+        run: |
+          pip install --upgrade pip
+          pip install \
+            jupyter-book \
+            sphinx-tabs \
+            sphinx-copybutton \
+            sphinx-togglebutton \
+            myst-parser \
+            jupytext
+
+      # ── 4. Convertir .tex → .ipynb ───────────────────────
+      - name: Convertir LaTeX a notebooks
+        run: |
+          python scripts/tex2ipynb.py --all tex/ notebooks/
+          echo "Notebooks generados:"
+          ls notebooks/*.ipynb | wc -l
+
+      # ── 5. Generar páginas de bloque (intro de cada bloque) ──
+      - name: Generar páginas de bloque
+        run: python scripts/gen_bloque_pages.py
+
+      # ── 6. Build del libro ───────────────────────────────
+      - name: Build Jupyter Book
+        run: |
+          jupyter-book build . \
+            --config _config.yml \
+            --toc _toc.yml \
+            --warningiserror \
+            2>&1 | tee build.log
+          echo "Build terminado."
+
+      # ── 7. Reportar advertencias del build ───────────────
+      - name: Mostrar advertencias
+        if: always()
+        run: grep -i "warning\|error" build.log || echo "Sin advertencias."
+
+      # ── 8. Deploy a GitHub Pages ─────────────────────────
+      #    Solo en push a main (no en PRs)
+      - name: Deploy a GitHub Pages
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token : ${{ secrets.GITHUB_TOKEN }}
+          publish_dir  : ./_build/html
+          publish_branch: gh-pages
+          commit_message: "deploy: ${{ github.sha }}"
+          force_orphan : true    # rama gh-pages siempre limpia
+
+      # ── 9. Subir build como artifact (para PRs y debug) ──
+      - name: Subir artifact del build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jupyter-book-html
+          path: ./_build/html
+          retention-days: 7

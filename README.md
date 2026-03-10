@@ -1,3 +1,161 @@
+# Del orbital al espacio químico
+
+> Manual de prácticas de química computacional  
+> Eduardo Gabriel Guzmán-López · Miguel Reina  
+> UNAM · Facultad de Química · Grupo Dra. Annia Galano
+
+[![Deploy](https://github.com/qcmanual/del-orbital-al-espacio-quimico/actions/workflows/deploy.yml/badge.svg)](https://github.com/qcmanual/del-orbital-al-espacio-quimico/actions/workflows/deploy.yml)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+
+**Libro en línea:** https://eduardo-gabriel-guzman-lopez.github.io/computational-chemistry-book/intro.html
+
+---
+
+## Estructura del repositorio
+
+```
+del-orbital-al-espacio-quimico/
+│
+├── tex/                    ← FUENTE DE VERDAD (archivos LaTeX)
+│   ├── practica-01.tex
+│   ├── practica-02.tex
+│   └── ...practica-55.tex
+│
+├── notebooks/              ← GENERADO AUTOMÁTICAMENTE (no editar)
+│   ├── p01.ipynb           ←  generado por tex2ipynb.py
+│   ├── bloque01.md         ←  generado por gen_bloque_pages.py
+│   └── ...
+│
+├── scripts/
+│   ├── tex2ipynb.py        ← conversor LaTeX → Jupyter Notebook
+│   └── gen_bloque_pages.py ← genera páginas intro de bloques
+│
+├── assets/                 ← imágenes, logo, favicon
+├── anexos/                 ← Anexo A y B en Markdown
+│   ├── anexo_a.md
+│   ├── anexo_b.md
+│   ├── glosario.md
+│   └── referencias.md
+│
+├── _config.yml             ← configuración de Jupyter Book
+├── _toc.yml                ← tabla de contenidos
+├── intro.md                ← página de inicio del libro
+├── prefacio.md             ← prefacio (generado desde prefacio.tex)
+├── environment.yml         ← entorno conda para desarrollo local
+│
+└── .github/
+    └── workflows/
+        └── deploy.yml      ← GitHub Action: build + deploy automático
+```
+
+## Flujo de trabajo
+
+**La fuente de verdad son los archivos `.tex` en `tex/`.**  
+Los notebooks se generan automáticamente. Nunca edites los `.ipynb`
+directamente; los cambios se perderán en el siguiente build.
+
+```
+# Editar una práctica
+vim tex/practica-04.tex
+
+# Probar la conversión localmente
+python scripts/tex2ipynb.py tex/practica-04.tex -o notebooks/p04.ipynb
+
+# Hacer push → el GitHub Action hace el resto
+git add tex/practica-04.tex
+git commit -m "P04: mejorar sección de análisis de resultados"
+git push
+```
+
+El deploy tarda ~3 minutos. Puedes ver el progreso en la pestaña
+**Actions** del repositorio.
+
+## Desarrollo local
+
+### 1. Clonar e instalar dependencias
+
+```bash
+git clone https://github.com/qcmanual/del-orbital-al-espacio-quimico.git
+cd del-orbital-al-espacio-quimico
+conda env create -f environment.yml
+conda activate qcmanual-book
+```
+
+### 2. Convertir los .tex a notebooks
+
+```bash
+# Una práctica
+python scripts/tex2ipynb.py tex/practica-01.tex -o notebooks/p01.ipynb
+
+# Todas las prácticas de golpe
+python scripts/tex2ipynb.py --all tex/ notebooks/
+```
+
+### 3. Build local del libro
+
+```bash
+jupyter-book build .
+# Abrir en el navegador:
+open _build/html/index.html    # macOS
+xdg-open _build/html/index.html  # Linux
+```
+
+### 4. Limpiar el build
+
+```bash
+jupyter-book clean .
+```
+
+## Agregar una nueva práctica
+
+1. Crear `tex/practica-NN.tex` siguiendo la plantilla en
+   `tex/plantilla-practica-v2.tex`
+2. Añadir la entrada correspondiente en `_toc.yml`
+3. Actualizar `scripts/gen_bloque_pages.py` si es un bloque nuevo
+4. Hacer push → el CI/CD hace el resto
+
+## Convención de código dual ORCA / Gaussian
+
+Para bloques de input que tienen versión dual, usar en el `.tex`:
+
+```latex
+\begin{orcablock}
+! B3LYP def2-TZVP Opt
+* xyz 0 1
+O  0.000  0.000  0.000
+...
+\end{orcablock}
+
+\begin{g16block}
+# B3LYP/def2TZVP Opt
+0 1
+O  0.000  0.000  0.000
+...
+\end{g16block}
+```
+
+El conversor genera automáticamente las pestañas sincronizadas en el libro.
+
+## Licencia
+
+El contenido de este manual está bajo licencia
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+El código (scripts y notebooks) está bajo licencia MIT.
+
+## Citar este trabajo
+
+```bibtex
+@book{guzman_reina_2025,
+  title     = {Del orbital al espacio qu{\'i}mico:
+               Manual de pr{\'a}cticas de qu{\'i}mica computacional},
+  author    = {Guzm{\'a}n-L{\'o}pez, Eduardo Gabriel and Reina, Miguel},
+  year      = {2025},
+  publisher = {UNAM · Facultad de Qu{\'i}mica},
+  url       = {https://qcmanual.github.io/del-orbital-al-espacio-quimico}
+}
+```
+
+
 # Computational Chemistry Laboratory Manual
 
 A hands-on laboratory manual designed to teach modern computational

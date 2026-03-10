@@ -1,39 +1,35 @@
-# Table of contents
-# Learn more at https://jupyterbook.org/customize/toc.html
+# ══════════════════════════════════════════════════════════════
+# _toc.yml  —  Tabla de contenidos (estado mínimo funcional)
+# ══════════════════════════════════════════════════════════════
 
 format: jb-book
 root: intro
+
 parts:
-  - caption: "Introducción"
+  - caption: Contenido actual
     chapters:
-      - file: part1-foundations/overview
-        title: "Estructura y flujos de trabajo"
+      - file: p01
+        title: "Práctica 1"
 
-  - caption: "Parte I: Fundamentos de química cuántica"
-    chapters:
-      - file: part1-foundations/p01-first-steps
-        title: "Práctica 1: Primeros pasos"
-        sections:
-          - file: part1-foundations/p01-cafeina-completo
-            title: "   📓 Notebook ejecutable (Jupyter)"
-      # Future practices will be added here
-      # - file: part1-foundations/p02-name
-      # - file: part1-foundations/p03-name
-
-  - caption: "Parte II: Reactividad química"
-    chapters:
-      - file: part2-reactivity/p19-reaction-analysis
-        title: "Práctica 19: Análisis de energías de reacción"
-      # Future practices will be added here
-
-  - caption: "Parte III: Mecanismos de reacción"
-    chapters:
-      - file: part3-mechanisms/p33-transition-states
-        title: "Práctica 33: Análisis de estados de transición"
-      # Future practices will be added here
-
-  - caption: "Parte IV: IA en quimioinformática"
-    chapters:
-      - file: part4-ai-cheminformatics/p47-molecular-libraries
-        title: "Práctica 47: Generación de bibliotecas moleculares con RDKit"
-      # Future practices will be added here
+# ── Siguiente etapa (descomentando conforme existan archivos) ──
+#
+# parts:
+#   - caption: Inicio
+#     chapters:
+#       - file: prefacio
+#       - file: guia_rapida
+#
+#   - caption: "Parte I · Fundamentos y estructura electrónica"
+#     chapters:
+#       - file: notebooks/bloque01
+#         sections:
+#           - file: notebooks/p01
+#           - file: notebooks/p02
+#           - file: notebooks/p03
+#
+#   - caption: Anexos
+#     chapters:
+#       - file: anexos/anexo_a
+#       - file: anexos/anexo_b
+#       - file: anexos/glosario
+#       - file: anexos/referencias

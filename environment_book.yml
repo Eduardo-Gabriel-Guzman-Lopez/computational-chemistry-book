@@ -1,0 +1,16 @@
+name: qcmanual-book
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pyyaml          # para gen_bloque_pages.py
+
+  - pip:
+    - jupyter-book
+    - sphinx-tabs
+    - sphinx-copybutton
+    - sphinx-togglebutton
+    - myst-parser
+    - jupytext
