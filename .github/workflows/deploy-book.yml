@@ -12,6 +12,9 @@ permissions:
 jobs:
   build-book:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
 
     steps:
       - name: Checkout repository
@@ -22,39 +25,64 @@ jobs:
         with:
           auto-update-conda: true
           python-version: "3.11"
+          miniforge-variant: Mambaforge
+          use-mamba: true
 
       - name: Install dependencies
         run: |
-          conda install -c conda-forge jupyter-book ghp-import sphinx-design rdkit numpy scipy pandas matplotlib seaborn py3dmol nglview
+          mamba install -c conda-forge \
+            jupyter-book \
+            sphinx-design \
+            sphinxcontrib-bibtex \
+            sphinxcontrib-mermaid \
+            ghp-import \
+            rdkit \
+            numpy \
+            scipy \
+            pandas \
+            matplotlib \
+            seaborn \
+            py3dmol \
+            nglview
+
+      - name: Verify installation
+        run: |
+          which jupyter-book
+          jupyter-book --version
 
       - name: Show project files
         run: |
           pwd
           ls -la
-          find . -maxdepth 2 -type f | sort | head -200
+          echo "Checking for key files..."
+          ls -la _config.yml _toc.yml references.bib || echo "Some files are missing"
 
       - name: Build book
         run: |
-          jupyter-book build .
-          echo "Build completed with exit code: $?"
+          echo "Starting Jupyter Book build..."
+          jupyter-book build . -W --keep-going
 
       - name: Inspect build output
         run: |
           echo "Checking _build contents..."
-          ls -la
-          ls -la _build || echo "_build directory not found"
-          ls -la _build/html || echo "_build/html directory not found"
-          # Check if index.html exists
-          if [ -f "_build/html/index.html" ]; then
-            echo "✓ index.html found"
+          if [ -d "_build/html" ]; then
+            echo "✓ _build/html directory found"
+            ls -la _build/html | head -20
+            if [ -f "_build/html/index.html" ]; then
+              echo "✓ index.html found"
+            else
+              echo "✗ index.html not found"
+              find _build -name "*.html" | head -5
+            fi
           else
-            echo "✗ index.html not found"
+            echo "✗ _build/html directory not found"
+            ls -la _build 2>/dev/null || echo "No _build directory"
             exit 1
           fi
 
       - name: Deploy to gh-pages
         run: |
-          echo "Starting deployment..."
+          echo "Starting deployment to GitHub Pages..."
           if [ -d "_build/html" ]; then
             echo "✓ _build/html directory exists"
             ls -la _build/html | head -10
@@ -63,7 +91,6 @@ jobs:
             echo "✓ Deployment completed successfully"
           else
             echo "✗ _build/html directory not found!"
-            echo "Build may have failed. Checking for errors..."
-            ls -la _build 2>/dev/null || echo "No _build directory at all"
             exit 1
           fi
+
