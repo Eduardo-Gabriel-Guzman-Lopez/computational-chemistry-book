@@ -1,0 +1,106 @@
+/* custom.css: extend Jupyter Book with PDF-style palette
+   inspired by libro_computacional.sty colors */
+:root {
+  --qc-blue: #0F2747;
+  --qc-teal: #2A6F97;
+  --qc-light: #DCE6F2;
+  --qc-gray: #5D6D7E;
+  --qc-line: #AABBD0;
+}
+
+/* body text and links */
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+a {
+  color: var(--qc-teal);
+}
+a:hover {
+  color: var(--qc-blue);
+}
+
+/* navbar and footer accents */
+.jp-TopSiteLogo a {
+  color: var(--qc-blue) !important;
+}
+.jb-header {
+  background-color: var(--qc-light);
+}
+
+/* admonitions styled like advertencia/notameto */
+.admonition.note,
+.admonition.tip,
+.admonition.caution,
+.admonition.warning,
+.admonition.important {
+  border-left: 4px solid var(--qc-teal);
+  background-color: var(--qc-light);
+}
+.admonition.note .admonition-title,
+.admonition.tip .admonition-title {
+  color: var(--qc-blue);
+}
+
+/* code blocks */
+.highlight pre {
+  background: #f8f8f8;
+  font-size: 0.9em;       /* slightly smaller for instructions */
+  line-height: 1.3em;
+  padding: 0.75em;        /* more breathing room */
+}
+
+/* Jupyter code cell font */
+.jp-Cell-code {
+  font-size: 0.9em !important;
+}
+
+/* add margin between cells and sections */
+.jp-Cell {
+  margin-bottom: 1.5em;
+}
+
+/* improve heading size/spacing for a book feel */
+h1 {
+  font-size: 2.2em;
+  margin-top: 1.2em;
+  margin-bottom: 0.6em;
+}
+h2 {
+  font-size: 1.8em;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+h3 {
+  font-size: 1.4em;
+  margin-top: 0.8em;
+  margin-bottom: 0.4em;
+}
+
+
+/* headers use qcblue color */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--qc-blue);
+}
+
+/* strengthen blockquote appearance */
+blockquote {
+  border-left: 4px solid var(--qc-line);
+  padding-left: 1em;
+  color: var(--qc-gray);
+}
+
+/* make the main content narrower for book feel */
+.container, .page {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* cover graphic styling */
+img.cover {
+  display: block;
+  margin: 0.5em auto 1.5em;
+  max-width: 100%;
+  height: auto;
+  border: none;
+}
