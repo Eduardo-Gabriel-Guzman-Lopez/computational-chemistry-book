@@ -1,0 +1,746 @@
+
+<!DOCTYPE html>
+
+
+<html lang="es" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Práctica 47: Generación de bibliotecas moleculares con RDKit &#8212; Manual de prácticas para química computacional. Del orbital al espacio químico</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=e263a399" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=78d55cf8"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Haz clic para mostrar';</script>
+    <script>let toggleHintHide = 'Haz clic para ocultar';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+    <script src="../_static/translations.js?v=d190bf04"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'part4-ai-cheminformatics/p47-molecular-libraries';</script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" />
+    <link rel="prev" title="Práctica 33: Análisis de estados de transición" href="../part3-mechanisms/p33-transition-states.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="es"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Saltar al contenido principal</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Volver arriba</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Advertencia de versión"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Manual de prácticas para química computacional. Del orbital al espacio químico</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Búsqueda</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Manual de prácticas para química computacional. Del orbital al espacio químico
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introducción</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../part1-foundations/overview.html">Estructura y flujos de trabajo</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte I: Fundamentos de química cuántica</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../part1-foundations/p01-first-steps.html">Práctica 1: Primeros pasos con Gaussian y ORCA</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte II: Reactividad química</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../part2-reactivity/p19-reaction-analysis.html">Práctica 19: Análisis de energías de reacción</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte III: Mecanismos de reacción</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../part3-mechanisms/p33-transition-states.html">Práctica 33: Análisis de estados de transición</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Parte IV: IA en quimioinformática</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Práctica 47: Generación de bibliotecas moleculares con RDKit</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Repositorio de origen"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/edit/main/part4-ai-cheminformatics/p47-molecular-libraries.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book/issues/new?title=Issue%20on%20page%20%2Fpart4-ai-cheminformatics/p47-molecular-libraries.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Abrir un problema"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Descarga esta pagina">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/part4-ai-cheminformatics/p47-molecular-libraries.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Descargar archivo fuente"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Imprimir en PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Modo de pantalla completa"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Tema" data-bs-title="Tema"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Claro"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Oscuro"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="Sistema"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Búsqueda" aria-label="Búsqueda" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Práctica 47: Generación de bibliotecas moleculares con RDKit</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contenido </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduccion">Introducción</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#marco-teorico">Marco teórico</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#smiles-y-smarts-el-lenguaje-del-espacio-quimico">1. SMILES y SMARTS: el lenguaje del espacio químico</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#regla-de-los-cinco-de-lipinski">2. Regla de los cinco de Lipinski</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gfn2-xtb-para-cribado-energetico">3. GFN2-xTB para cribado energético</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#protocolo-computacional">Protocolo computacional</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-1-definir-el-cabezal-y-los-sustituyentes">Paso 1: Definir el cabezal y los sustituyentes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-2-enumerar-derivados">Paso 2: Enumerar derivados</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-3-calcular-descriptores-de-lipinski-y-veber">Paso 3: Calcular descriptores de Lipinski y Veber</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-4-aplicar-filtros-de-semejanza-a-farmacos">Paso 4: Aplicar filtros de semejanza a fármacos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-5-generacion-3d-y-visualizacion">Paso 5: Generación 3D y visualización</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-6-visualizar-moleculas-seleccionadas">Paso 6: Visualizar moléculas seleccionadas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-7-cribado-energetico-gfn2-xtb">Paso 7: Cribado energético (GFN2-xTB)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-8-analizar-la-biblioteca">Paso 8: Analizar la biblioteca</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-9-exportar-resultados">Paso 9: Exportar resultados</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#success-index">Success Index</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="practica-47-generacion-de-bibliotecas-moleculares-con-rdkit">
+<h1>Práctica 47: Generación de bibliotecas moleculares con RDKit<a class="headerlink" href="#practica-47-generacion-de-bibliotecas-moleculares-con-rdkit" title="Link to this heading">#</a></h1>
+<div class="tip admonition">
+<p class="admonition-title">Resumen de la práctica</p>
+<p><strong>Bloque temático</strong>: 17 – Exploración del espacio químico<br />
+<strong>Nivel de dificultad</strong>: Intermedio<br />
+<strong>Tiempo estimado</strong>: 1 h (semilla) + 3 h (bosque y análisis)<br />
+<strong>Flujo</strong>: andamiaje SMILES → enumeración de derivados → generación 3D → filtrado Lipinski/Veber → cribado energético → conjunto de datos estructurado</p>
+</div>
+<section id="introduccion">
+<h2>Introducción<a class="headerlink" href="#introduccion" title="Link to this heading">#</a></h2>
+<p>El espacio químico de las moléculas orgánicas estables con hasta 30 átomos no-hidrógeno se estima en <span class="math notranslate nohighlight">\(10^{60}\)</span> compuestos. Ningún laboratorio puede sintetizar y ensayar esa cantidad, pero la química computacional puede <strong>enumerar virtualmente</strong> una región acotada de ese espacio —por ejemplo, todos los derivados de un cabezal bioactivo con un conjunto fijo de sustituyentes— y <strong>cribar</strong> los candidatos generados con criterios fisicoquímicos antes de comprometer tiempo de síntesis o cálculo DFT.</p>
+<p>Este flujo de trabajo —<em>generar y luego filtrar</em>— es el punto de entrada del diseño molecular asistido por IA:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Enumeración (P47) → Representación y similitud (P49-P50)
+    → Aprendizaje automático (P51-P53) → Diseño de novo (P54-P55)
+</pre></div>
+</div>
+</section>
+<section id="marco-teorico">
+<h2>Marco teórico<a class="headerlink" href="#marco-teorico" title="Link to this heading">#</a></h2>
+<section id="smiles-y-smarts-el-lenguaje-del-espacio-quimico">
+<h3>1. SMILES y SMARTS: el lenguaje del espacio químico<a class="headerlink" href="#smiles-y-smarts-el-lenguaje-del-espacio-quimico" title="Link to this heading">#</a></h3>
+<p>SMILES (<em>Sistema Simplificado de Entrada Lineal de Moléculas</em>) codifica la conectividad molecular como una cadena de texto. SMARTS (<em>especificación arbitraria de objetivos SMILES</em>) extiende SMILES para la búsqueda de subestructuras y la definición de patrones de reacción.</p>
+</section>
+<section id="regla-de-los-cinco-de-lipinski">
+<h3>2. Regla de los cinco de Lipinski<a class="headerlink" href="#regla-de-los-cinco-de-lipinski" title="Link to this heading">#</a></h3>
+<p>Los criterios de Lipinski (1997) identifican moléculas con baja probabilidad de biodisponibilidad oral:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Propiedad</p></th>
+<th class="head"><p>Umbral</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Peso molecular</p></td>
+<td><p>≤ 500 Da</p></td>
+</tr>
+<tr class="row-odd"><td><p>LogP</p></td>
+<td><p>≤ 5</p></td>
+</tr>
+<tr class="row-even"><td><p>Donantes de H-bond</p></td>
+<td><p>≤ 5</p></td>
+</tr>
+<tr class="row-odd"><td><p>Aceptores de H-bond</p></td>
+<td><p>≤ 10</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Adiciones de Veber:</strong> Enlaces rotables ≤ 10 y Área de Superficie Polar (PSA) ≤ 140 Å²</p>
+</section>
+<section id="gfn2-xtb-para-cribado-energetico">
+<h3>3. GFN2-xTB para cribado energético<a class="headerlink" href="#gfn2-xtb-para-cribado-energetico" title="Link to this heading">#</a></h3>
+<p>El método semiemperico GFN2-xTB calcula la energía total con precisión suficiente para el cribado: error medio en entalpías de formación &lt; 3 kcal/mol, tiempo de cálculo ~1 s por molécula (hasta 50 átomos pesados).</p>
+</section>
+</section>
+<section id="protocolo-computacional">
+<h2>Protocolo computacional<a class="headerlink" href="#protocolo-computacional" title="Link to this heading">#</a></h2>
+<section id="paso-1-definir-el-cabezal-y-los-sustituyentes">
+<h3>Paso 1: Definir el cabezal y los sustituyentes<a class="headerlink" href="#paso-1-definir-el-cabezal-y-los-sustituyentes" title="Link to this heading">#</a></h3>
+</section>
+<section id="paso-2-enumerar-derivados">
+<h3>Paso 2: Enumerar derivados<a class="headerlink" href="#paso-2-enumerar-derivados" title="Link to this heading">#</a></h3>
+</section>
+<section id="paso-3-calcular-descriptores-de-lipinski-y-veber">
+<h3>Paso 3: Calcular descriptores de Lipinski y Veber<a class="headerlink" href="#paso-3-calcular-descriptores-de-lipinski-y-veber" title="Link to this heading">#</a></h3>
+</section>
+<section id="paso-4-aplicar-filtros-de-semejanza-a-farmacos">
+<h3>Paso 4: Aplicar filtros de semejanza a fármacos<a class="headerlink" href="#paso-4-aplicar-filtros-de-semejanza-a-farmacos" title="Link to this heading">#</a></h3>
+</section>
+<section id="paso-5-generacion-3d-y-visualizacion">
+<h3>Paso 5: Generación 3D y visualización<a class="headerlink" href="#paso-5-generacion-3d-y-visualizacion" title="Link to this heading">#</a></h3>
+</section>
+<section id="paso-6-visualizar-moleculas-seleccionadas">
+<h3>Paso 6: Visualizar moléculas seleccionadas<a class="headerlink" href="#paso-6-visualizar-moleculas-seleccionadas" title="Link to this heading">#</a></h3>
+</section>
+<section id="paso-7-cribado-energetico-gfn2-xtb">
+<h3>Paso 7: Cribado energético (GFN2-xTB)<a class="headerlink" href="#paso-7-cribado-energetico-gfn2-xtb" title="Link to this heading">#</a></h3>
+<p>For high-throughput screening, GFN2-xTB provides accurate energies at low computational cost.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+GFN2-xTB (Recommended)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Batch optimization script</span>
+<span class="k">for</span><span class="w"> </span>xyz<span class="w"> </span><span class="k">in</span><span class="w"> </span>library/*.xyz<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nv">name</span><span class="o">=</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$xyz</span><span class="s2">&quot;</span><span class="w"> </span>.xyz<span class="k">)</span>
+<span class="w">    </span>xtb<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$xyz</span><span class="s2">&quot;</span><span class="w"> </span>--opt<span class="w"> </span>crude<span class="w"> </span>--chrg<span class="w"> </span><span class="m">0</span><span class="w"> </span>--uhf<span class="w"> </span><span class="m">0</span><span class="w"> </span>--gfn<span class="w"> </span><span class="m">2</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">_xtb.out&quot;</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
+<span class="w">    </span><span class="c1"># Extract energy</span>
+<span class="w">    </span>grep<span class="w"> </span><span class="s2">&quot;TOTAL ENERGY&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">_xtb.out&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-1<span class="w"> </span>&gt;&gt;<span class="w"> </span>energies.dat
+<span class="k">done</span>
+</pre></div>
+</div>
+<p><strong>Parameters for screening:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--opt</span> <span class="pre">crude</span></code>: Fast convergence, suitable for filtering</p></li>
+<li><p>Typical time: ~1s per molecule (&lt; 50 atoms)</p></li>
+</ul>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Gaussian</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">chk</span><span class="o">=</span><span class="n">derivative</span><span class="o">.</span><span class="n">chk</span>
+<span class="o">%</span><span class="n">mem</span><span class="o">=</span><span class="mi">2</span><span class="n">GB</span>
+<span class="o">%</span><span class="n">nproc</span><span class="o">=</span><span class="mi">2</span>
+<span class="c1"># PM7 Opt=(MaxCycles=50)</span>
+
+<span class="n">Derivative</span> <span class="n">screening</span>
+
+<span class="mi">0</span> <span class="mi">1</span>
+<span class="p">[</span><span class="n">coordinates</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
+ORCA</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>! PM3 Opt
+%maxcore 2000
+
+* xyzfile 0 1 derivative.xyz
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="paso-8-analizar-la-biblioteca">
+<h3>Paso 8: Analizar la biblioteca<a class="headerlink" href="#paso-8-analizar-la-biblioteca" title="Link to this heading">#</a></h3>
+</section>
+<section id="paso-9-exportar-resultados">
+<h3>Paso 9: Exportar resultados<a class="headerlink" href="#paso-9-exportar-resultados" title="Link to this heading">#</a></h3>
+</section>
+</section>
+<section id="success-index">
+<h2>Success Index<a class="headerlink" href="#success-index" title="Link to this heading">#</a></h2>
+<p>The <strong>enumeration success index</strong> <span class="math notranslate nohighlight">\(I_s\)</span> measures library quality:</p>
+<div class="math notranslate nohighlight">
+\[I_s = \frac{N_{\text{valid with 3D}}}{N_{\text{enumerated}}} \times 100\%\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(I_s &gt; 80\%\)</span>: Well-designed library</p></li>
+<li><p><span class="math notranslate nohighlight">\(I_s &lt; 50\%\)</span>: Substitution positions or fragments introduce geometric conflicts</p></li>
+</ul>
+</section>
+<section id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
+<div class="note admonition">
+<p class="admonition-title">Exercise 1: Custom Scaffold</p>
+<p>Choose a different scaffold (e.g., indole, pyrimidine) and generate a library of 100+ derivatives. Calculate the success index.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Exercise 2: Expanded Substituents</p>
+<p>Add 10 more substituents to the library. How does this affect the drug-likeness percentage?</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Exercise 3: Energy Filtering</p>
+<p>Generate 3D conformers for all drug-like molecules and filter out those with unusually high MMFF94 energy (outliers &gt; mean + 2σ).</p>
+</div>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>En esta práctica aprendiste:</p>
+<ol class="arabic simple">
+<li><p><strong>Virtual enumeration</strong>: Generating combinatorial libraries from a scaffold</p></li>
+<li><p><strong>Drug-likeness filtering</strong>: Applying Lipinski and Veber rules</p></li>
+<li><p><strong>Property calculation</strong>: Computing molecular descriptors with RDKit</p></li>
+<li><p><strong>3D generation</strong>: Using ETKDGv3 for conformer generation</p></li>
+<li><p><strong>Energy screening</strong>: Using GFN2-xTB for fast energy filtering</p></li>
+</ol>
+<div class="tip admonition">
+<p class="admonition-title">Pasos siguientes</p>
+<p>En las Prácticas 49–50 aprenderemos huellas moleculares y cálculos de similitud para agrupar y analizar estas bibliotecas.</p>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Lipinski, C.A. et al. <em>Experimental and computational approaches to estimate solubility and permeability in drug discovery and development settings</em>. Adv. Drug Deliv. Rev. 1997, 23, 3-25.</p></li>
+<li><p>Veber, D.F. et al. <em>Molecular properties that influence the oral bioavailability of drug candidates</em>. J. Med. Chem. 2002, 45, 2615-2623.</p></li>
+<li><p>Bannwarth, C. et al. <em>GFN2-xTB—An Accurate and Broadly Parametrized Self-Consistent Tight-Binding Quantum Chemical Method</em>. J. Chem. Theory Comput. 2019, 15, 1652-1671.</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "Eduardo-Gabriel-Guzman-Lopez/computational-chemistry-book",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./part4-ai-cheminformatics"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../part3-mechanisms/p33-transition-states.html"
+       title="página anterior">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">anterior</p>
+        <p class="prev-next-title">Práctica 33: Análisis de estados de transición</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contenido
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduccion">Introducción</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#marco-teorico">Marco teórico</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#smiles-y-smarts-el-lenguaje-del-espacio-quimico">1. SMILES y SMARTS: el lenguaje del espacio químico</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#regla-de-los-cinco-de-lipinski">2. Regla de los cinco de Lipinski</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gfn2-xtb-para-cribado-energetico">3. GFN2-xTB para cribado energético</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#protocolo-computacional">Protocolo computacional</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-1-definir-el-cabezal-y-los-sustituyentes">Paso 1: Definir el cabezal y los sustituyentes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-2-enumerar-derivados">Paso 2: Enumerar derivados</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-3-calcular-descriptores-de-lipinski-y-veber">Paso 3: Calcular descriptores de Lipinski y Veber</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-4-aplicar-filtros-de-semejanza-a-farmacos">Paso 4: Aplicar filtros de semejanza a fármacos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-5-generacion-3d-y-visualizacion">Paso 5: Generación 3D y visualización</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-6-visualizar-moleculas-seleccionadas">Paso 6: Visualizar moléculas seleccionadas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-7-cribado-energetico-gfn2-xtb">Paso 7: Cribado energético (GFN2-xTB)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-8-analizar-la-biblioteca">Paso 8: Analizar la biblioteca</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paso-9-exportar-resultados">Paso 9: Exportar resultados</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#success-index">Success Index</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+Por Azriel Belgrado
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
