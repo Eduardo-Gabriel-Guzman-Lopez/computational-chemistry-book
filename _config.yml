@@ -2,7 +2,8 @@
 title: "Manual de prácticas para química computacional. Del orbital al espacio químico"
 author: "Azriel Belgrado"
 copyright: "2026"
-logo: assets/images/logo.png
+# logo: assets/images/logo.png  # comentado porque no existe el archivo
+
 
 # Execution settings
 execute:
@@ -23,8 +24,9 @@ html:
   use_edit_page_button: true
   home_page_in_navbar: true
   # add custom CSS and logo/cover graphic
-  favicon: assets/images/logo.png
-  logo: assets/images/logo.png
+  # No logo image provided yet; using cover.png if desired
+  #favicon: assets/images/logo.png
+  #logo: assets/images/logo.png
   extra_css:
     - _static/custom.css
 
@@ -46,13 +48,12 @@ sphinx:
   config:
     language: es
     mermaid_version: "10.6.1"
-    mermaid_init_js: |
-      mermaid.initialize({
-        'securityLevel': 'loose',
-        'flowchart': {'curve': 'linear', 'nodeSpacing': 50, 'rankSpacing': 80}
-      });
+    # mermaid_init_js was removed because the current sphinxcontrib-mermaid
+    # extension no longer recognizes it; keeping it causes a -W build error
     bibtex_bibfiles:
       - references.bib
+    exclude_patterns:
+      - README.md  # 跳过 Unused README to avoid warning treated-as-error
 
 # MyST parser extensions
 parse:
