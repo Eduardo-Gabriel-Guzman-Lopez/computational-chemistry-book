@@ -25,6 +25,8 @@ Una vez disponible la geometría inicial, la práctica introduce el primer pipel
 
 En términos del modelo Semilla–Bosque: la **semilla** es la construcción y optimización de una molécula sencilla que el estudiante ejecuta por sí mismo. El **bosque** es un dataset de 50 moléculas orgánicas con diversidad estructural —aromáticos, heteroaromáticos, sistemas flexibles y casos difíciles— para los cuales el mismo pipeline ya fue ejecutado. El análisis del bosque permite identificar qué características estructurales hacen que la incrustación 3D sea más o menos confiable, y cómo la energía de pre-optimización se correlaciona con descriptores topológicos básicos.
 
+![Pipeline: SMILES → Geometría 3D optimizada](../assets/images/diagram_P01.png)
+
 ## Marco teórico
 
 ### Conceptos clave
@@ -188,15 +190,9 @@ Basándome en las preguntas previas, espero que el anillo purínico sea plano (o
 
 ## Protocolo computacional
 
-El protocolo consta de **6 pasos principales** que transforman una cadena SMILES en una geometría 3D optimizada:
-
-![Pipeline: SMILES → Geometría 3D optimizada](../assets/images/diagram_P01.png)
-
-### Detalles de cada paso:
-
 ### Paso 1: Construir el grafo molecular
 
-```python
+```{code-cell} ipython3
 from rdkit import Chem
 from rdkit.Chem import AllChem, Draw
 from rdkit.Chem import rdMolDescriptors
