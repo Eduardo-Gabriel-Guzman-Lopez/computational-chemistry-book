@@ -57,7 +57,7 @@ jobs:
       - name: Build book
         run: |
           echo "Starting Jupyter Book build..."
-          jupyter-book build . -W --keep-going
+          python -m jupyter_book build . -W --keep-going
 
       - name: Inspect build output
         run: |
