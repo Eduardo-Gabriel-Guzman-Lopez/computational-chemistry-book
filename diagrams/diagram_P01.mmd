@@ -1,0 +1,13 @@
+graph LR
+    A["<b>SMILES</b><br/>Texto"] -->|RDKit| B["<b>Grafo molecular</b><br/>Conectividad"]
+    B -->|ETKDG| C["<b>Geometría 3D</b><br/>Incrustación"]
+    C -->|MMFF94| D["<b>Pre-optimización</b><br/>Campo de fuerza"]
+    D -->|GFN2-xTB| E["<b>Optimización</b><br/>Semiempírica"]
+    E -->|Análisis| F["<b>Dataset</b><br/>Estructural"]
+    
+    style A fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
+    style B fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
+    style C fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
+    style D fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
+    style E fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747
+    style F fill:#DCE6F2,stroke:#2A6F97,stroke-width:2px,color:#0F2747

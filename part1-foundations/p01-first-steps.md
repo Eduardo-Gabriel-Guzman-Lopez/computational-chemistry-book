@@ -190,16 +190,9 @@ Basándome en las preguntas previas, espero que el anillo purínico sea plano (o
 
 El protocolo consta de **6 pasos principales** que transforman una cadena SMILES en una geometría 3D optimizada:
 
-![Flujo del protocolo: SMILES → Geometría 3D optimizada](../assets/images/p01-protocol-diagram.png)
+![Pipeline: SMILES → Geometría 3D optimizada](../assets/images/diagram_P01.png)
 
-**Detalles de cada paso:**
-
-- **Paso 1**: Construir el grafo molecular a partir del SMILES
-- **Paso 2**: Visualizar la estructura 2D para verificación
-- **Paso 3**: Incrustación 3D con ETKDG
-- **Paso 4**: Pre-optimización con campo de fuerza MMFF94
-- **Paso 5**: Visualización 3D con py3Dmol
-- **Paso 6**: Exportar para optimización semiempírica (GFN2-xTB)
+### Detalles de cada paso:
 
 ### Paso 1: Construir el grafo molecular
 
