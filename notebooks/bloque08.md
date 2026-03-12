@@ -6,9 +6,9 @@ Calcula índices de Fukui, dureza y blandura globales, descriptores de electrofi
 
 ## Prácticas de este bloque
 
-- {doc}`P22 <p22>`
-- {doc}`P23 <p23>`
-- {doc}`P24 <p24>`
+- P22 *(próximamente)*
+- P23 *(próximamente)*
+- P24 *(próximamente)*
 
 ---
 

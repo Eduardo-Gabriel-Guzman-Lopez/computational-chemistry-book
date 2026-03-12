@@ -6,9 +6,9 @@ Asigna modos normales en espectros IR/Raman, predice desplazamientos químicos d
 
 ## Prácticas de este bloque
 
-- {doc}`P25 <p25>`
-- {doc}`P26 <p26>`
-- {doc}`P27 <p27>`
+- P25 *(próximamente)*
+- P26 *(próximamente)*
+- P27 *(próximamente)*
 
 ---
 

@@ -6,8 +6,8 @@ Enumera bibliotecas virtuales por sustitución sistemática de scaffolds, filtra
 
 ## Prácticas de este bloque
 
-- {doc}`P47 <p47>`
-- {doc}`P48 <p48>`
+- P47 *(próximamente)*
+- P48 *(próximamente)*
 
 ---
 

@@ -6,9 +6,9 @@ Compara HF y DFT en sistemas pequeños, analiza el efecto del funcional sobre pr
 
 ## Prácticas de este bloque
 
-- {doc}`P04 <p04>`
-- {doc}`P05 <p05>`
-- {doc}`P06 <p06>`
+- P04 *(próximamente)*
+- P05 *(próximamente)*
+- P06 *(próximamente)*
 
 ---
 

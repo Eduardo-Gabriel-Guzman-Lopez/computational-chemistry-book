@@ -6,9 +6,9 @@ Ejecuta benchmarks metodológicos MP2/CCSD(T) vs DFT, construye curvas de error 
 
 ## Prácticas de este bloque
 
-- {doc}`P16 <p16>`
-- {doc}`P17 <p17>`
-- {doc}`P18 <p18>`
+- P16 *(próximamente)*
+- P17 *(próximamente)*
+- P18 *(próximamente)*
 
 ---
 

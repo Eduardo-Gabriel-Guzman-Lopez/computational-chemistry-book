@@ -6,9 +6,9 @@ Calcula entalpías y energías de Gibbs de reacción, estima pKa computacional, 
 
 ## Prácticas de este bloque
 
-- {doc}`P28 <p28>`
-- {doc}`P29 <p29>`
-- {doc}`P30 <p30>`
+- P28 *(próximamente)*
+- P29 *(próximamente)*
+- P30 *(próximamente)*
 
 ---
 

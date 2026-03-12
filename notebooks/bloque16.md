@@ -6,7 +6,7 @@ Prepara receptor y ligando con Meeko, ejecuta docking con AutoDock Vina 1.2, val
 
 ## Prácticas de este bloque
 
-- {doc}`P46 <p46>`
+- P46 *(próximamente)*
 
 ---
 

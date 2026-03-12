@@ -6,9 +6,9 @@ Aplica PCA para interpretar el espacio de descriptores, construye modelos QSAR/Q
 
 ## Prácticas de este bloque
 
-- {doc}`P51 <p51>`
-- {doc}`P52 <p52>`
-- {doc}`P53 <p53>`
+- P51 *(próximamente)*
+- P52 *(próximamente)*
+- P53 *(próximamente)*
 
 ---
 

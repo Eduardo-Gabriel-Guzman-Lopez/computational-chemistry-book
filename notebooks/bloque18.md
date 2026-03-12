@@ -6,8 +6,8 @@ Calcula y limpia descriptores moleculares 2D, genera fingerprints ECFP4 y MACCS,
 
 ## Prácticas de este bloque
 
-- {doc}`P49 <p49>`
-- {doc}`P50 <p50>`
+- P49 *(próximamente)*
+- P50 *(próximamente)*
 
 ---
 

@@ -6,9 +6,9 @@ Ejecuta el protocolo completo de MD con GROMACS (parametrización AMBER ff14SB/G
 
 ## Prácticas de este bloque
 
-- {doc}`P43 <p43>`
-- {doc}`P44 <p44>`
-- {doc}`P45 <p45>`
+- P43 *(próximamente)*
+- P44 *(próximamente)*
+- P45 *(próximamente)*
 
 ---
 

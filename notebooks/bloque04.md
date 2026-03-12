@@ -6,9 +6,9 @@ Optimiza mínimos y estados de transición, valida con análisis frecuencial, y 
 
 ## Prácticas de este bloque
 
-- {doc}`P10 <p10>`
-- {doc}`P11 <p11>`
-- {doc}`P12 <p12>`
+- P10 *(próximamente)*
+- P11 *(próximamente)*
+- P12 *(próximamente)*
 
 ---
 

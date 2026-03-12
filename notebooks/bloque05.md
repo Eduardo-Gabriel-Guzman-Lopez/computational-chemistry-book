@@ -6,9 +6,9 @@ Detecta contaminación de espín en radicales, evalúa ruptura de simetría, y r
 
 ## Prácticas de este bloque
 
-- {doc}`P13 <p13>`
-- {doc}`P14 <p14>`
-- {doc}`P15 <p15>`
+- P13 *(próximamente)*
+- P14 *(próximamente)*
+- P15 *(próximamente)*
 
 ---
 

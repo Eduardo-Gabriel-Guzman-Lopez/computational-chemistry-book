@@ -6,8 +6,8 @@ Prioriza candidatos con función de desirabilidad multicriterio y frontera de Pa
 
 ## Prácticas de este bloque
 
-- {doc}`P54 <p54>`
-- {doc}`P55 <p55>`
+- P54 *(próximamente)*
+- P55 *(próximamente)*
 
 ---
 

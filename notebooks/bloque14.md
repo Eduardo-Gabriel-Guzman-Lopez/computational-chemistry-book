@@ -6,9 +6,9 @@ Genera automáticamente geometrías de complejos con molSimplify, analiza el cam
 
 ## Prácticas de este bloque
 
-- {doc}`P40 <p40>`
-- {doc}`P41 <p41>`
-- {doc}`P42 <p42>`
+- P40 *(próximamente)*
+- P41 *(próximamente)*
+- P42 *(próximamente)*
 
 ---
 

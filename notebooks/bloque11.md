@@ -6,9 +6,9 @@ Aplica la Teoría del Estado de Transición para obtener constantes de velocidad
 
 ## Prácticas de este bloque
 
-- {doc}`P31 <p31>`
-- {doc}`P32 <p32>`
-- {doc}`P33 <p33>`
+- P31 *(próximamente)*
+- P32 *(próximamente)*
+- P33 *(próximamente)*
 
 ---
 

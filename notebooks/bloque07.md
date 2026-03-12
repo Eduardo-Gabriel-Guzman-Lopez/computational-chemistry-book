@@ -6,9 +6,9 @@ Aplica NBO para cuantificar transferencia de carga, QTAIM para topología de den
 
 ## Prácticas de este bloque
 
-- {doc}`P19 <p19>`
-- {doc}`P20 <p20>`
-- {doc}`P21 <p21>`
+- P19 *(próximamente)*
+- P20 *(próximamente)*
+- P21 *(próximamente)*
 
 ---
 

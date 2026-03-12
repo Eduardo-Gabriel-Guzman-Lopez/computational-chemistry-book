@@ -6,9 +6,9 @@ Calcula energías de adsorción en superficies con VASP/QE, construye diagramas 
 
 ## Prácticas de este bloque
 
-- {doc}`P37 <p37>`
-- {doc}`P38 <p38>`
-- {doc}`P39 <p39>`
+- P37 *(próximamente)*
+- P38 *(próximamente)*
+- P39 *(próximamente)*
 
 ---
 

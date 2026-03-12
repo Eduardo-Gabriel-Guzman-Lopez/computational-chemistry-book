@@ -6,9 +6,9 @@ Construye curvas de convergencia con familias Pople, Dunning y Karlsruhe, introd
 
 ## Prácticas de este bloque
 
-- {doc}`P07 <p07>`
-- {doc}`P08 <p08>`
-- {doc}`P09 <p09>`
+- P07 *(próximamente)*
+- P08 *(próximamente)*
+- P09 *(próximamente)*
 
 ---
 

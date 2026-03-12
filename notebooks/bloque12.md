@@ -6,9 +6,9 @@ Caracteriza ligandos mediante el ángulo de cono de Tolman y el volumen sepultad
 
 ## Prácticas de este bloque
 
-- {doc}`P34 <p34>`
-- {doc}`P35 <p35>`
-- {doc}`P36 <p36>`
+- P34 *(próximamente)*
+- P35 *(próximamente)*
+- P36 *(próximamente)*
 
 ---
 
