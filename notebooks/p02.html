@@ -848,10 +848,8 @@ se usan en el resto del notebook.</p>
     <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">plotly.subplots</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_subplots</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;✓ Plotly OK&#39;</span><span class="p">)</span>
-    <span class="n">PLOTLY_OK</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;⚠ Plotly no disponible — instala: pip install plotly&#39;</span><span class="p">)</span>
-    <span class="n">PLOTLY_OK</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="c1"># scipy — correlación de Pearson en la figura de paridad</span>
 <span class="k">try</span><span class="p">:</span>
@@ -872,7 +870,7 @@ se usan en el resto del notebook.</p>
 <span class="n">EH2KJ</span> <span class="o">=</span> <span class="mf">2625.5</span>     <span class="c1"># factor de conversión: 1 Hartree → kJ/mol</span>
 
 <span class="c1"># ── Variables de la semilla (usadas como referencia global) ───────────────────</span>
-<span class="n">SMILES_SEMILLA</span> <span class="o">=</span> <span class="s1">&#39;O=c1ccccn1H&#39;</span>   <span class="c1"># 2-piridona, forma ceto (lactama)</span>
+<span class="n">SMILES_SEMILLA</span> <span class="o">=</span> <span class="s1">&#39;O=c1[nH]cccc1&#39;</span>   <span class="c1"># 2-piridona, forma ceto (lactama)</span>
 <span class="n">NOMBRE</span>         <span class="o">=</span> <span class="s1">&#39;2-piridona&#39;</span>
 <span class="n">DIRECTORIO</span>     <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">NOMBRE</span><span class="si">}</span><span class="s1">_tautomeros&#39;</span>
 
@@ -967,8 +965,7 @@ y la <strong>forma enol</strong> (C-OH, N sin H).</p></li>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Paso 1: SMILES → tautómeros → rejilla 2D ─────────────────────────────────</span>
 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">DIRECTORIO</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="c1"># MolFromSmiles convierte la cadena de texto en un grafo molecular (nodos = átomos,</span>
-<span class="c1"># aristas = enlaces). Retorna None si el SMILES no es sintácticamente válido.</span>
+<span class="c1"># MolFromSmiles convierte la cadena de texto en un grafo molecular</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">SMILES_SEMILLA</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">mol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SMILES no válido: </span><span class="si">{</span><span class="n">SMILES_SEMILLA</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -983,15 +980,18 @@ y la <strong>forma enol</strong> (C-OH, N sin H).</p></li>
 <span class="n">enumerador</span><span class="o">.</span><span class="n">SetMaxTautomers</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">enumerador</span><span class="o">.</span><span class="n">SetRemoveSp3Stereo</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># ignorar estereoquímica sp3 al comparar</span>
 
+<span class="c1"># OBJETO CLAVE: &#39;tautomeros&#39; es una lista de objetos Mol de RDKit.</span>
+<span class="c1"># Cada elemento de esta lista es un tautómero que puedes manipular individualmente.</span>
 <span class="c1"># Enumerate() devuelve una lista de objetos Mol — uno por tautómero</span>
 <span class="n">tautomeros</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">enumerador</span><span class="o">.</span><span class="n">Enumerate</span><span class="p">(</span><span class="n">mol</span><span class="p">))</span>
 <span class="n">n_tau</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tautomeros</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Tautómeros encontrados: </span><span class="si">{</span><span class="n">n_tau</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">()</span>
 
-<span class="c1"># MolToSmiles genera el SMILES canónico de cada tautómero.</span>
 <span class="c1"># Aunque dos strings de entrada sean distintos, si representan la misma</span>
 <span class="c1"># molécula producen el mismo SMILES canónico → así se eliminan duplicados.</span>
+<span class="c1"># MolToSmiles genera el SMILES canónico de cada tautómero.</span>
+
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tau</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tautomeros</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  T</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -1003,9 +1003,23 @@ y la <strong>forma enol</strong> (C-OH, N sin H).</p></li>
     <span class="n">tautomeros</span><span class="p">,</span>
     <span class="n">molsPerRow</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">subImgSize</span><span class="o">=</span><span class="p">(</span><span class="mi">320</span><span class="p">,</span> <span class="mi">260</span><span class="p">),</span>
-    <span class="n">legends</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;T</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tautomeros</span><span class="p">)]</span>
+    <span class="n">legends</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;T</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tautomeros</span><span class="p">)],</span>
+    <span class="n">useSVG</span><span class="o">=</span><span class="kc">False</span>  <span class="c1"># Forzamos formato imagen para poder guardar</span>
 <span class="p">)</span>
-<span class="n">img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">NOMBRE</span><span class="si">}</span><span class="s1">_tautomeros_2D.png&#39;</span><span class="p">)</span>
+
+<span class="c1"># En entornos como Colab, MolsToGridImage puede devolver un objeto IPython.display.Image</span>
+<span class="c1"># Intentamos guardarlo extrayendo los datos binarios si es necesario</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="s1">&#39;save&#39;</span><span class="p">):</span>
+        <span class="n">img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">NOMBRE</span><span class="si">}</span><span class="s1">_tautomeros_2D.png&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Si es un objeto de visualización de IPython, guardamos sus datos</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">NOMBRE</span><span class="si">}</span><span class="s1">_tautomeros_2D.png&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;✓ Imagen guardada como </span><span class="si">{</span><span class="n">NOMBRE</span><span class="si">}</span><span class="s1">_tautomeros_2D.png&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;⚠ No se pudo guardar la imagen: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
 <span class="n">display</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1021,32 +1035,46 @@ generados son genuinamente distintos. Esto ilustra también por qué
 detecta internamente estos mismos patrones.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Demo SMARTS: detectar patrones que distinguen cada tautómero ──────────────</span>
-<span class="c1"># HasSubstructMatch() devuelve True si la molécula contiene el patrón dado.</span>
-<span class="c1"># Los patrones son SMARTS, no SMILES — el lenguaje de búsqueda de RDKit.</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Demo SMARTS: comparar patrones genéricos vs específicos ──────────────────</span>
+<span class="c1"># Usamos SMARTS para identificar grupos funcionales específicos en los tautómeros.</span>
+
+<span class="c1"># NOTA DIDÁCTICA: Usamos [C,c] para que el patrón detecte tanto carbonos</span>
+<span class="c1"># alifáticos como aromáticos, ya que RDKit representa el anillo de la piridona</span>
+<span class="c1"># con aromaticidad.</span>
 
 <span class="n">patrones</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Carbonilo en anillo [NX3][CX3]=O&#39;</span>  <span class="p">:</span> <span class="s1">&#39;[NX3][CX3]=O&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Enol genérico [CX3]=[CX3][OH]&#39;</span>     <span class="p">:</span> <span class="s1">&#39;[CX3]=[CX3][OH]&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;N-H en anillo aromático [nH]&#39;</span>       <span class="p">:</span> <span class="s1">&#39;[nH]&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;N piridínico sin H [n;!H1]&#39;</span>         <span class="p">:</span> <span class="s1">&#39;[n;!H1]&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Carbonilo [C,c]=O&#39;</span>                  <span class="p">:</span> <span class="s1">&#39;[C,c]=O&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Carbonilo lactámico [n,N;X3][C,c]=O&#39;</span> <span class="p">:</span> <span class="s1">&#39;[n,N;X3][C,c]=O&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Enol [c,C][OH]&#39;</span>                      <span class="p">:</span> <span class="s1">&#39;[c,C][OH]&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;N-H en anillo aromático [nH]&#39;</span>         <span class="p">:</span> <span class="s1">&#39;[nH]&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;N piridínico sin H [n;!H1]&#39;</span>           <span class="p">:</span> <span class="s1">&#39;[n;!H1]&#39;</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="n">encabezado</span> <span class="o">=</span> <span class="s1">&#39;  &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;T</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tau</span><span class="p">)])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s1">&#39;Patrón SMARTS&#39;</span><span class="si">:</span><span class="s1">&lt;42</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">encabezado</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Patrón SMARTS&#39;</span><span class="si">:</span><span class="s2">&lt;42</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">encabezado</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;─&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">44</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">n_tau</span><span class="p">))</span>
+
 <span class="k">for</span> <span class="n">descripcion</span><span class="p">,</span> <span class="n">smarts_str</span> <span class="ow">in</span> <span class="n">patrones</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="c1"># MolFromSmarts convierte la cadena de texto en un objeto de búsqueda de patrones</span>
     <span class="n">patron</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="n">smarts_str</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">patron</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">continue</span>
+
+    <span class="c1"># HasSubstructMatch() es la función central: busca si el patrón SMARTS existe</span>
+    <span class="c1"># dentro de la estructura del tautómero (devuelve True o False).</span>
     <span class="n">matches</span> <span class="o">=</span> <span class="s1">&#39;   &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;✓&#39;</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">HasSubstructMatch</span><span class="p">(</span><span class="n">patron</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;✗&#39;</span>
                           <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tautomeros</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">descripcion</span><span class="si">:</span><span class="s1">&lt;40</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">matches</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Los distintos patrones en T1 vs T2 confirman que son formas tautómeras genuinas.&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Observa:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;1. El &quot;Carbonilo&quot; detecta el enlace C=O presente en T1.&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;2. El &quot;Carbonilo lactámico&quot; confirma que ese carbonilo es parte de una amida cíclica (lactama).&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;3. El patrón &quot;Enol&quot; detecta el grupo -OH unido al anillo en T2.&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;4. T2 da negativo en los carbonilos porque el oxígeno está como grupo hidroxilo (-OH).&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Los distintos patrones en T1 vs T2 confirman que son formas tautómeras genuinas.&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;TautomerEnumerator detecta estos mismos patrones internamente para decidir&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;qué reglas de transformación son aplicables.&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;qué reglas de transformación son aplicables en el equilibrio químico.&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1086,45 +1114,56 @@ MMFF94 no captura efectos electrónicos finos — por eso necesitamos xTB.</p></
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ── Paso 2: geometría 3D para cada tautómero ─────────────────────────────────</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="n">registros_geom</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">DIRECTORIO</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">tau</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tautomeros</span><span class="p">):</span>
     <span class="n">etiqueta</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">NOMBRE</span><span class="si">}</span><span class="s1">_T</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&#39;</span>
 
-    <span class="c1"># AddHs: hidrógenos explícitos necesarios para ETKDG y para xTB (--ohess)</span>
+    <span class="c1"># OBJETO CLAVE: &#39;tau_h&#39; es el objeto Mol que contiene los hidrógenos explícitos</span>
+    <span class="c1"># y al que se le asignarán las coordenadas 3D (X, Y, Z).</span>
     <span class="n">tau_h</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">AddHs</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
 
-    <span class="c1"># ETKDGv3: ok=0 éxito, ok=-1 fallo (molécula muy tensionada)</span>
+    <span class="c1"># ETKDGv3: genera coordenadas iniciales basadas en conocimiento experimental</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ETKDGv3</span><span class="p">()</span>
     <span class="n">params</span><span class="o">.</span><span class="n">randomSeed</span> <span class="o">=</span> <span class="mi">42</span>
     <span class="n">ok</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMolecule</span><span class="p">(</span><span class="n">tau_h</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">ok</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  T</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">: ✗ fallo en incrustación ETKDG&#39;</span><span class="p">)</span>
-        <span class="n">registros_geom</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;etiqueta&#39;</span><span class="p">:</span> <span class="n">etiqueta</span><span class="p">,</span>
-                                <span class="s1">&#39;smiles&#39;</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">tau</span><span class="p">),</span>
-                                <span class="s1">&#39;embed_ok&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;e_ff_kcalmol&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
         <span class="k">continue</span>
 
+    <span class="c1"># Minimización con MMFF94 para limpiar la geometría</span>
     <span class="n">props</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">MMFFGetMoleculeProperties</span><span class="p">(</span><span class="n">tau_h</span><span class="p">)</span>
     <span class="n">ff</span>    <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">MMFFGetMoleculeForceField</span><span class="p">(</span><span class="n">tau_h</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  T</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">: ⚠ MMFF94 sin parámetros, usando UFF&#39;</span><span class="p">)</span>
         <span class="n">ff</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">UFFGetMoleculeForceField</span><span class="p">(</span><span class="n">tau_h</span><span class="p">)</span>
     <span class="n">ff</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="n">maxIts</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
-    <span class="n">e_ff</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">CalcEnergy</span><span class="p">()</span>  <span class="c1"># energía final en kcal/mol</span>
+    <span class="n">e_ff</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">CalcEnergy</span><span class="p">()</span>
 
+    <span class="c1"># Guardar archivo XYZ</span>
     <span class="n">xyz_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DIRECTORIO</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">etiqueta</span><span class="si">}</span><span class="s1">_FF.xyz&#39;</span><span class="p">)</span>
-    <span class="n">rdmolfiles</span><span class="o">.</span><span class="n">MolToXYZFile</span><span class="p">(</span><span class="n">tau_h</span><span class="p">,</span> <span class="n">xyz_path</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">xyz_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToXYZBlock</span><span class="p">(</span><span class="n">tau_h</span><span class="p">))</span>
 
-    <span class="n">registros_geom</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;etiqueta&#39;</span><span class="p">:</span> <span class="n">etiqueta</span><span class="p">,</span>
-                            <span class="s1">&#39;smiles&#39;</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">tau</span><span class="p">),</span>
-                            <span class="s1">&#39;embed_ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;e_ff_kcalmol&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">e_ff</span><span class="p">,</span> <span class="mi">3</span><span class="p">)})</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  T</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">: ✓  E_MMFF94 = </span><span class="si">{</span><span class="n">e_ff</span><span class="si">:</span><span class="s1">8.2f</span><span class="si">}</span><span class="s1"> kcal/mol&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">xyz_path</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  T</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">: ✓ Archivo guardado: </span><span class="si">{</span><span class="n">xyz_path</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;                           E_FF = </span><span class="si">{</span><span class="n">e_ff</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> kcal/mol</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  T</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">: ✗ Error al guardar el archivo&#39;</span><span class="p">)</span>
+
+    <span class="n">registros_geom</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s1">&#39;etiqueta&#39;</span><span class="p">:</span> <span class="n">etiqueta</span><span class="p">,</span>
+        <span class="s1">&#39;smiles&#39;</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">tau</span><span class="p">),</span>
+        <span class="s1">&#39;embed_ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;e_ff_kcalmol&#39;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">e_ff</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="p">})</span>
 
 <span class="n">df_geom</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">registros_geom</span><span class="p">)</span>
-<span class="n">n_ok</span> <span class="o">=</span> <span class="n">df_geom</span><span class="p">[</span><span class="s1">&#39;embed_ok&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">n_ok</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">n_tau</span><span class="si">}</span><span class="s1"> tautómeros con geometría lista para xTB&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Total de geometrías generadas: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_geom</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1"># NOTA: &#39;df_geom&#39; es el objeto DataFrame que resume los resultados de este paso.</span>
 </pre></div>
 </div>
 </div>
