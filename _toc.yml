@@ -12,6 +12,8 @@ parts:
         title: "Práctica 1"
       - file: notebooks/p02
         title: "Práctica 2"
+      - file: notebooks/p03
+        title: "Práctica 3"        
 
 # ── Siguiente etapa (descomentando conforme existan archivos) ──
 #

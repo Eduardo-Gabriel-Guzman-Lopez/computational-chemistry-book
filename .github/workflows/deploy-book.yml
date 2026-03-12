@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install jupyter-book==1.0.4 sphinx-design sphinxcontrib-bibtex sphinxcontrib-mermaid sphinx-tabs sphinx-copybutton sphinx-togglebutton myst-parser jupytext
+          pip install jupyter-book==1.0.4 sphinx-design sphinxcontrib-bibtex sphinxcontrib-mermaid
           mamba install -c conda-forge \
             ghp-import \
             rdkit \
@@ -54,18 +54,10 @@ jobs:
           echo "Checking for key files..."
           ls -la _config.yml _toc.yml references.bib || echo "Some files are missing"
 
-      # ── Siguiente etapa (descomentar cuando vuelvan las carpetas/fuentes) ──
-      # - name: Convertir LaTeX a notebooks
-      #   run: |
-      #     python scripts/tex2ipynb.py --all tex/ notebooks/
-      #
-      # - name: Generar páginas de bloque
-      #   run: python scripts/gen_bloque_pages.py
-
       - name: Build book
         run: |
           echo "Starting Jupyter Book build..."
-          jupyter-book build . --config _config.yml --toc _toc.yml
+          jupyter-book build . -W --keep-going
 
       - name: Inspect build output
         run: |

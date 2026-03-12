@@ -1,0 +1,8 @@
+git add notebooks/p01.ipynb
+git commit -m "Update p01 notebook answers"
+gpush-main
+
+Publicar el sitio actualizado:
+
+jupyter-book build .
+gdeploy-pages
